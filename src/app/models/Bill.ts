@@ -2,19 +2,17 @@ import IBill from '../interfaces/IBill';
 import Category from '../enums/Category';
 
 export class Bill {
-  public name: string | undefined;
-  public amount: string | undefined;
-  public date: string | undefined;
-  public necessity: boolean | undefined;
-  public category: Category | undefined;
+  public name?: string;
+  public amount?: string;
+  public date?: string;
+  public necessity?: boolean;
+  public category?: Category;
 
-  constructor();
-  constructor(bill: Bill);
-  constructor(bill?: Bill) {
-    this.name = bill?.name;
-    this.amount = bill?.amount;
-    this.date = bill?.date;
-    this.necessity = bill?.necessity;
-    this.category = bill?.category;
+  constructor(name: string, amount: string, date: string, necessity: boolean, category?: Category) {
+    this.name = name;
+    this.amount = amount;
+    this.date = date;
+    this.necessity = necessity;
+    this.category = category;
   }
 }

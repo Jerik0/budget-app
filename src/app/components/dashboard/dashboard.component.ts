@@ -32,9 +32,11 @@ import {
   styleUrl: './dashboard.component.scss'
 })
 export class DashboardComponent implements OnInit {
-  bill = new Bill();
   date = new Date();
   currentDate = this.date.toISOString();
+  bill = new Bill('test name', '$10.00', this.currentDate, true, Category.General);
+  selectedBill: number | null = null;
+
   dataSource = new MatTableDataSource<any>();
   columnsToDisplay = ['name', 'amount', 'date', 'necessity', 'category'];
 
@@ -42,37 +44,51 @@ export class DashboardComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.bill.name = 'test name';
-    this.bill.amount = '$10.00';
-    this.bill.date = this.currentDate;
-    this.bill.necessity = true;
-    this.bill.category = Category.General;
-
-    this.billService.getAllBills().subscribe(res => {
-      // @ts-ignore
-      this.dataSource.data = res;
-      console.log(this.dataSource.data);
-    });
+    this.getBillsList();
   }
 
-  onButtonClick() {
+  onAddBill() {
     this.billService.createBill(this.bill).subscribe(res => {
+      // copy data, update it, assign back to dataSource.data
       let updatedData = this.dataSource.data;
       updatedData.push(res);
-
       this.dataSource.data = updatedData;
       console.log('bill created:', res);
     });
   }
 
-  getId(bill: any) {
-    const updatedBill = new Bill();
-    updatedBill.name = bill.name;
-    updatedBill.amount = bill.amount;
-    updatedBill.date = bill.date;
-    // !! parses string into boolean
-    updatedBill.necessity = !!bill.necessity;
-    updatedBill.category = bill.category;
+  getBillsList() {
+    this.billService.getAllBills().subscribe(res => {
+      // @ts-ignore
+      this.dataSource.data = res;
+      console.log('bills:', res);
+    })
+  }
+
+  onSelectBill(bill: any) {
+    if (this.selectedBill === +bill.id) {
+      this.selectedBill = null;
+    } else {
+      this.selectedBill = +bill.id;
+    }
+
+    console.log(this.selectedBill);
+  }
+
+  onUpdateBill(bill: any) {
+    const updatedBill = new Bill(bill.name, bill.amount, bill.date, !!bill.necessity, bill.category);
     console.log(updatedBill);
+    console.log('bill id:', +bill.id);
+  }
+
+  onDeleteBill(id: number | null) {
+    if (this.selectedBill !== null) {
+      this.billService.deleteBill(id).subscribe(res => {
+        let updatedData = this.dataSource.data;
+        this.dataSource.data = updatedData.filter(bill => bill.id !== id);
+        console.log(res);
+        this.selectedBill = null;
+      });
+    }
   }
 }

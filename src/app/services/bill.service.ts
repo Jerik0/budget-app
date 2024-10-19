@@ -23,7 +23,11 @@ export class BillService {
     return this.http.get(`http://localhost:3000/bills/${id}`);
   }
 
-  updateBill(bill: Bill) {
-    return this.http.put('http://localhost:3000/bills/', bill);
+  updateBill(id: number, bill: Bill) {
+    return this.http.put(`http://localhost:3000/bills/${id}`, bill);
+  }
+
+  deleteBill(id: number | null) {
+    return this.http.delete(`http://localhost:3000/bills/${id}`);
   }
 }
