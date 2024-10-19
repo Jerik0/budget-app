@@ -2,10 +2,13 @@ import 'dotenv/config'
 import express from 'express'
 import billRouter from './routers/bill-router.js';
 import path from 'path'
+import { fileURLToPath } from 'url';
 import * as bodyParser from 'express'
 import runDbMigrations from './db/migrations/index.js';
 const app = express()
 const port = 3000
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 app.use((req,res,next) => {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -18,6 +21,7 @@ app.use((req,res,next) => {
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use('/bills', billRouter);
+app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/api/test', (req, res) => {
   console.log(res.status);

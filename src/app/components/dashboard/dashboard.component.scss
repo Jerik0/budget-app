@@ -1,0 +1,25 @@
+#dashboard-wrapper {
+  height: 100%;
+}
+
+#bills-list-wrapper {
+  overflow: auto;
+  height: 524px;
+}
+
+:host ::ng-deep {
+  #bills-list-wrapper::-webkit-scrollbar {
+    width: .5em;
+  }
+
+  #bills-list-wrapper::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+  }
+
+  #bills-list-wrapper::-webkit-scrollbar-thumb {
+    background-color: #b3f5f2;
+    outline: 1px solid slategrey;
+  }
+}
+
+
