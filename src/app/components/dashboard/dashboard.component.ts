@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { BillService } from "../../services/bill.service";
-import {MatButton} from "@angular/material/button";
-import {Bill} from "../../models/Bill";
+import { MatButton } from "@angular/material/button";
+import { Bill } from "../../models/Bill";
 import Category from "../../enums/Category";
 import {
   MatCell,
@@ -9,7 +9,7 @@ import {
   MatColumnDef,
   MatHeaderCell,
   MatHeaderCellDef, MatHeaderRow, MatHeaderRowDef, MatRow, MatRowDef,
-  MatTable
+  MatTable, MatTableDataSource
 } from "@angular/material/table";
 
 @Component({
@@ -32,11 +32,11 @@ import {
   styleUrl: './dashboard.component.scss'
 })
 export class DashboardComponent implements OnInit {
-  response: any;
   bill = new Bill();
-  currentDate = '20241019';
-  dataSource: any;
-  columnsToDisplay = ['id', 'name', 'amount', 'date', 'necessity', 'category']
+  date = new Date();
+  currentDate = this.date.toISOString();
+  dataSource = new MatTableDataSource<any>();
+  columnsToDisplay = ['name', 'amount', 'date', 'necessity', 'category'];
 
   constructor(private billService: BillService) {
   }
@@ -49,19 +49,30 @@ export class DashboardComponent implements OnInit {
     this.bill.category = Category.General;
 
     this.billService.getAllBills().subscribe(res => {
-      this.dataSource = res;
-      console.log(this.dataSource);
+      // @ts-ignore
+      this.dataSource.data = res;
+      console.log(this.dataSource.data);
     });
   }
 
   onButtonClick() {
-    this.billService.test().subscribe(res => {
-      this.response = res.message;
-      console.log(res)
+    this.billService.createBill(this.bill).subscribe(res => {
+      let updatedData = this.dataSource.data;
+      updatedData.push(res);
+
+      this.dataSource.data = updatedData;
+      console.log('bill created:', res);
     });
+  }
 
-
-
-    this.billService.createBill(this.bill).subscribe(res => {console.log(res)});
+  getId(bill: any) {
+    const updatedBill = new Bill();
+    updatedBill.name = bill.name;
+    updatedBill.amount = bill.amount;
+    updatedBill.date = bill.date;
+    // !! parses string into boolean
+    updatedBill.necessity = !!bill.necessity;
+    updatedBill.category = bill.category;
+    console.log(updatedBill);
   }
 }

@@ -10,11 +10,6 @@ export class BillService {
 
   constructor(private http: HttpClient) { }
 
-  test(): Observable<any> {
-    console.log('test was called');
-    return this.http.get('http://localhost:3000/api/test');
-  }
-
   createBill(bill: Bill) {
     console.log('createBill called');
     return this.http.post('http://localhost:3000/bills', bill);
