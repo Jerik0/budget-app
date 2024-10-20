@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, ElementRef, inject, OnInit, ViewChild} from '@angular/core';
 import {BillService} from "../../services/bill.service";
 import {MatButton} from "@angular/material/button";
 import {Bill} from "../../models/Bill";
@@ -19,9 +19,11 @@ import {
 import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
 import {MatFormField} from "@angular/material/form-field";
 import {MatInput} from "@angular/material/input";
-import {KeyValuePipe, NgClass, NgForOf} from "@angular/common";
+import {KeyValuePipe, NgClass, NgForOf, NgIf, NgTemplateOutlet} from "@angular/common";
 import {MatIcon, MatIconModule} from "@angular/material/icon";
 import {MatOption, MatSelect} from "@angular/material/select";
+import {MatDialog} from "@angular/material/dialog";
+import {MatMenu, MatMenuContent, MatMenuItem, MatMenuTrigger} from "@angular/material/menu";
 
 @Component({
   selector: 'app-dashboard',
@@ -48,7 +50,13 @@ import {MatOption, MatSelect} from "@angular/material/select";
     NgForOf,
     KeyValuePipe,
     MatOption,
-    FormsModule
+    FormsModule,
+    MatMenu,
+    NgIf,
+    MatMenuTrigger,
+    MatMenuContent,
+    MatMenuItem,
+    NgTemplateOutlet
   ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss'
@@ -62,7 +70,7 @@ export class DashboardComponent implements OnInit {
   dataSource = new MatTableDataSource<any>();
   columnsToDisplay = ['name', 'amount', 'date', 'necessity', 'category'];
   billForm: FormGroup;
-  selectedCategory: Category = Category.General;
+  readonly dialog = inject(MatDialog);
 
   constructor(private billService: BillService, public fb: FormBuilder) {
     this.billForm = fb.group({
@@ -132,7 +140,7 @@ export class DashboardComponent implements OnInit {
 
   makeEditable(id: number) {
     this.editableId = id;
-    console.log(id);
+    console.log('editableId:', this.editableId);
   }
 
   getIcon(side: string, id: number) {
@@ -165,10 +173,11 @@ export class DashboardComponent implements OnInit {
     this.editableId = undefined;
   }
 
-  rightFunction(id: number) {
+  rightFunction(id: number, bill: Bill) {
     if (id !== this.editableId) {
       // this.onSelectBill(id);
-      this.deleteSelectedBills(id);
+      // this.deleteSelectedBills(id);
+      // this.openConfirmDialog(bill);
       return;
     }
 

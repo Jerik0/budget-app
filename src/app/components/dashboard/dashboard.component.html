@@ -64,8 +64,19 @@
             </mat-select>
 <!--          </mat-form-field>-->
           <div class="bill-hover-menu">
-            <mat-icon [ngClass]="getIcon('left', +bill.id)" [fontIcon]="getIcon('left', +bill.id)" (click)="leftFunction(+bill.id, bill)"></mat-icon>
-            <mat-icon [ngClass]="getIcon('right', +bill.id)" [fontIcon]="getIcon('right', +bill.id)" (click)="rightFunction(+bill.id)"></mat-icon>
+            <mat-icon
+              [ngClass]="getIcon('left', +bill.id)"
+              [fontIcon]="getIcon('left', +bill.id)"
+              (click)="leftFunction(+bill.id, bill)">
+            </mat-icon>
+
+            <mat-icon
+              [matMenuTriggerFor]="editableId !== +bill.id ? confirmMenu : null"
+              [matMenuTriggerData]="bill"
+              [ngClass]="getIcon('right', +bill.id)"
+              [fontIcon]="getIcon('right', +bill.id)"
+              (click)="rightFunction(+bill.id, bill)">
+            </mat-icon>
           </div>
         </td>
       </ng-container>
@@ -79,3 +90,13 @@
     </table>
   </div>
 </div>
+
+<mat-menu class="confirm-menu" overlapTrigger="true" #confirmMenu="matMenu" yPosition="above" xPosition="before">
+  <ng-template matMenuContent let-name="name" let-id="id">
+    <div>
+      <span class="confirm-menu-text">Are you sure you want to delete {{name}}?</span>
+      <button class="confirm-menu-btn" mat-button (click)="deleteSelectedBills(+id)">Yes</button>
+      <button class="confirm-menu-btn" mat-button #noButton>No</button>
+    </div>
+  </ng-template>
+</mat-menu>

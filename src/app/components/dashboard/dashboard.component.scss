@@ -95,7 +95,7 @@
   #bills-table {
     //height: 100%;
     th {
-      z-index: unset !important;
+      //z-index: unset !important;
     }
 
     td.mat-mdc-cell {
@@ -134,13 +134,14 @@
       display: flex;
       text-align: center;
       padding: 4px 8px;
-      z-index: 2;
+      z-index: 101;
     }
   }
 
   #bills-list-wrapper::-webkit-scrollbar {
     width: .5em;
     border-radius: 10px;
+    margin-left: 5px;
   }
 
   #bills-list-wrapper::-webkit-scrollbar-track {
@@ -149,9 +150,53 @@
   }
 
   #bills-list-wrapper::-webkit-scrollbar-thumb {
-    background-color: #b3f5f2;
+    background-color: #2b2d42;
     border-radius: 10px;
-    outline: 1px solid slategrey;
+    //outline: 1px solid slategrey;
+  }
+}
+
+
+
+.confirm-menu-btn.mdc-button  {
+  color: #fff !important;
+  border-radius: 50%;
+  padding: 0;
+  min-width: 36px;
+  min-height: 36px;
+
+  &:first-of-type:hover {
+    background-color: #fa6060;
+  }
+
+  &:hover {
+    color: rgba(255, 255, 255, 0.7);
+    background-color: rgba(199, 199, 199, 0.7);
+  }
+}
+
+// targeting the overlay elements which can only be done using ::ng-deep with no :host prefix.
+::ng-deep {
+  .cdk-overlay-connected-position-bounding-box:has(.mat-mdc-menu-panel.confirm-menu) {
+    transform: translate(22px, 15px);
+  }
+
+  .confirm-menu {
+    .confirm-menu-text {
+      color: rgb(255, 131, 131);
+      margin-right: 5px;
+    }
+  }
+
+  .mat-mdc-menu-panel.confirm-menu {
+    padding: 0 10px;
+    background-color: rgba(43, 45, 66, 0.75) !important;
+    color: #e3e3e3 !important;
+    max-width: unset !important;
+
+    & .mat-mdc-menu-content {
+      padding: 6px !important;
+    }
   }
 }
 
