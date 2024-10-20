@@ -14,6 +14,7 @@ import {
 import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 import {MatFormField} from "@angular/material/form-field";
 import {MatInput} from "@angular/material/input";
+import {NgClass} from "@angular/common";
 
 @Component({
   selector: 'app-dashboard',
@@ -32,14 +33,15 @@ import {MatInput} from "@angular/material/input";
     MatRowDef,
     ReactiveFormsModule,
     MatFormField,
-    MatInput
+    MatInput,
+    NgClass
   ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss'
 })
 export class DashboardComponent implements OnInit {
   date = new Date();
-  selectedBill: number | null = null;
+  // selectedBill: number | null = null;
   billsToDelete: number[] = [];
   dataSource = new MatTableDataSource<any>();
   columnsToDisplay = ['name', 'amount', 'date', 'necessity', 'category'];
@@ -81,16 +83,12 @@ export class DashboardComponent implements OnInit {
   }
 
   onSelectBill(bill: any) {
-    let filteredArray = this.billsToDelete;
-    if (this.selectedBill === +bill.id) {
-      this.selectedBill = null;
-      this.billsToDelete = filteredArray.filter(item => item !== +bill.id);
+    let arrayToFilter = this.billsToDelete;
+    if (this.billsToDelete.includes(+bill.id)) {
+      this.billsToDelete = arrayToFilter.filter(item => item !== +bill.id);
     } else {
-      this.selectedBill = +bill.id;
       this.billsToDelete.push(+bill.id);
     }
-
-    console.log(this.selectedBill);
     console.log(this.billsToDelete);
   }
 
@@ -106,9 +104,10 @@ export class DashboardComponent implements OnInit {
       this.billService.delete(this.billsToDelete).subscribe(res => {
         console.log(res);
         this.billsToDelete = [];
-        this.selectedBill = null;
         this.getBillsList();
       });
     }
   }
+
+  protected readonly parseInt = parseInt;
 }
