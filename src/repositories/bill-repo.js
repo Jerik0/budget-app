@@ -70,23 +70,29 @@ const updateOne = async (id, { name, amount, date, necessity, category }) => {
   }
 }
 
-const deleteOne = async (id) => {
-  const query = `
-  DELETE FROM
-    bills
-  WHERE
-    id = $1
-  RETURNING *
+const deleteBills = async (values) => {
+  try {
+    const ids = values.split(',');
+    const parsedIds = ids.map(id => parseInt(id));
+
+    const query = `
+    DELETE FROM
+      bills
+    WHERE
+      id IN (${parsedIds})
   ;`;
 
-  try {
-    const result = await db.query(query, [+id]);
-    return result.rows[0];
+    try {
+      const result = await db.query(query);
+      return `Deleted ${result.rowCount} rows :)`;
+    } catch (e) {
+      console.log(e.message);
+    }
   } catch (e) {
-    console.log(e);
+    console.log(e.message);
   }
 }
 
 export default {
-  create, findAll, findById, updateOne, deleteOne
+  create, findAll, findById, updateOne, deleteBills
 };

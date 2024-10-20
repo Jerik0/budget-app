@@ -27,7 +27,10 @@ export class BillService {
     return this.http.put(`http://localhost:3000/bills/${id}`, bill);
   }
 
-  deleteBill(id: number | null) {
-    return this.http.delete(`http://localhost:3000/bills/${id}`);
+  delete(ids: number[]): Observable<any> {
+    console.log('ids joined:', ids.join(','));
+    return this.http.delete('http://localhost:3000/bills/many', {
+      params: { ids: ids.join(',') }
+    });
   }
 }

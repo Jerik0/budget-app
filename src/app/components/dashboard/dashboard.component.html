@@ -1,8 +1,12 @@
 <div id="dashboard-wrapper">
-  <button mat-flat-button (click)="onAddBill()">Click to create a Bill</button>
-  <button mat-flat-button (click)="onDeleteBill(selectedBill)">Click to delete a Bill</button>
+  <button mat-flat-button (click)="onAddBill()">Create a Bill</button>
+  <button mat-flat-button (click)="deleteSelectedBills()">Delete Selected Bills</button>
 
-  <form></form>
+  <form [formGroup]="billForm">
+    <mat-form-field>
+      <input formControlName="name" matInput type="text" placeholder="name">
+    </mat-form-field>
+  </form>
 
   <div id="bills-list-wrapper">
     <table mat-table [dataSource]="dataSource" class="mat-elevation-z4">

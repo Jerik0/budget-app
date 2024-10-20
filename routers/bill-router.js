@@ -23,9 +23,9 @@ router.put('/:id', async (req, res) => {
   res.status(200).json(result);
 });
 
-router.delete('/:id', async (req, res) => {
-  const result = await billRepo.deleteOne(+req.params.id);
+router.delete('/many', async (req, res) => {
+  const result = await billRepo.deleteBills(req.query.ids);
   res.status(200).json(result);
-});
+})
 
 export default router;

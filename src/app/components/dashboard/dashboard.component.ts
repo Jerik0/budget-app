@@ -11,6 +11,9 @@ import {
   MatHeaderCellDef, MatHeaderRow, MatHeaderRowDef, MatRow, MatRowDef,
   MatTable, MatTableDataSource
 } from "@angular/material/table";
+import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
+import {MatFormField} from "@angular/material/form-field";
+import {MatInput} from "@angular/material/input";
 
 @Component({
   selector: 'app-dashboard',
@@ -26,21 +29,30 @@ import {
     MatHeaderRow,
     MatHeaderRowDef,
     MatRow,
-    MatRowDef
+    MatRowDef,
+    ReactiveFormsModule,
+    MatFormField,
+    MatInput
   ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss'
 })
 export class DashboardComponent implements OnInit {
   date = new Date();
-  currentDate = this.date.toISOString();
-  bill = new Bill('test name', '$10.00', this.currentDate, true, Category.General);
   selectedBill: number | null = null;
-
+  billsToDelete: number[] = [];
   dataSource = new MatTableDataSource<any>();
   columnsToDisplay = ['name', 'amount', 'date', 'necessity', 'category'];
+  billForm: FormGroup;
 
-  constructor(private billService: BillService) {
+  constructor(private billService: BillService, public fb: FormBuilder) {
+    this.billForm = fb.group({
+      name: ['', Validators.required],
+      amount: ['', Validators.required],
+      date: ['', Validators.required],
+      necessity: ['', Validators.required],
+      category: ['', Validators.required]
+    })
   }
 
   ngOnInit(): void {
@@ -48,7 +60,10 @@ export class DashboardComponent implements OnInit {
   }
 
   onAddBill() {
-    this.billService.createBill(this.bill).subscribe(res => {
+    let currentDate = this.date.toISOString();
+    let bill = new Bill('test name', '$10.00', currentDate, true, Category.General);
+
+    this.billService.createBill(bill).subscribe(res => {
       // copy data, update it, assign back to dataSource.data
       let updatedData = this.dataSource.data;
       updatedData.push(res);
@@ -66,13 +81,17 @@ export class DashboardComponent implements OnInit {
   }
 
   onSelectBill(bill: any) {
+    let filteredArray = this.billsToDelete;
     if (this.selectedBill === +bill.id) {
       this.selectedBill = null;
+      this.billsToDelete = filteredArray.filter(item => item !== +bill.id);
     } else {
       this.selectedBill = +bill.id;
+      this.billsToDelete.push(+bill.id);
     }
 
     console.log(this.selectedBill);
+    console.log(this.billsToDelete);
   }
 
   onUpdateBill(bill: any) {
@@ -81,13 +100,14 @@ export class DashboardComponent implements OnInit {
     console.log('bill id:', +bill.id);
   }
 
-  onDeleteBill(id: number | null) {
-    if (this.selectedBill !== null) {
-      this.billService.deleteBill(id).subscribe(res => {
-        let updatedData = this.dataSource.data;
-        this.dataSource.data = updatedData.filter(bill => bill.id !== id);
+  deleteSelectedBills() {
+    console.log('bills to delete:', this.billsToDelete);
+    if (this.billsToDelete.length !== 0) {
+      this.billService.delete(this.billsToDelete).subscribe(res => {
         console.log(res);
+        this.billsToDelete = [];
         this.selectedBill = null;
+        this.getBillsList();
       });
     }
   }
