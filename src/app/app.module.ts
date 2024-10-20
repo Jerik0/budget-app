@@ -12,7 +12,8 @@ import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { AppComponent } from './app.component';
 import { MatCard } from "@angular/material/card";
-import {provideAnimations} from "@angular/platform-browser/animations";
+import { provideAnimations } from "@angular/platform-browser/animations";
+import { MatIconModule } from '@angular/material/icon';
 
 // AoT requires an exported function for factories
 const httpLoaderFactory = (http: HttpClient): TranslateHttpLoader =>  new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -27,6 +28,7 @@ const httpLoaderFactory = (http: HttpClient): TranslateHttpLoader =>  new Transl
     CoreModule,
     SharedModule,
     AppRoutingModule,
+    MatIconModule,
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,

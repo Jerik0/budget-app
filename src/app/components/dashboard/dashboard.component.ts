@@ -1,20 +1,27 @@
-import { Component, OnInit } from '@angular/core';
-import { BillService } from "../../services/bill.service";
-import { MatButton } from "@angular/material/button";
-import { Bill } from "../../models/Bill";
+import {Component, OnInit} from '@angular/core';
+import {BillService} from "../../services/bill.service";
+import {MatButton} from "@angular/material/button";
+import {Bill} from "../../models/Bill";
 import Category from "../../enums/Category";
 import {
   MatCell,
   MatCellDef,
   MatColumnDef,
   MatHeaderCell,
-  MatHeaderCellDef, MatHeaderRow, MatHeaderRowDef, MatRow, MatRowDef,
-  MatTable, MatTableDataSource
+  MatHeaderCellDef,
+  MatHeaderRow,
+  MatHeaderRowDef,
+  MatRow,
+  MatRowDef,
+  MatTable,
+  MatTableDataSource
 } from "@angular/material/table";
-import {FormBuilder, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
+import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
 import {MatFormField} from "@angular/material/form-field";
 import {MatInput} from "@angular/material/input";
-import {NgClass} from "@angular/common";
+import {KeyValuePipe, NgClass, NgForOf} from "@angular/common";
+import {MatIcon, MatIconModule} from "@angular/material/icon";
+import {MatOption, MatSelect} from "@angular/material/select";
 
 @Component({
   selector: 'app-dashboard',
@@ -34,18 +41,28 @@ import {NgClass} from "@angular/common";
     ReactiveFormsModule,
     MatFormField,
     MatInput,
-    NgClass
+    NgClass,
+    MatIcon,
+    MatIconModule,
+    MatSelect,
+    NgForOf,
+    KeyValuePipe,
+    MatOption,
+    FormsModule
   ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss'
 })
 export class DashboardComponent implements OnInit {
+  protected readonly parseInt = parseInt;
+  protected readonly category = Category;
   date = new Date();
-  // selectedBill: number | null = null;
   billsToDelete: number[] = [];
+  editableId: number | undefined;
   dataSource = new MatTableDataSource<any>();
   columnsToDisplay = ['name', 'amount', 'date', 'necessity', 'category'];
   billForm: FormGroup;
+  selectedCategory: Category = Category.General;
 
   constructor(private billService: BillService, public fb: FormBuilder) {
     this.billForm = fb.group({
@@ -82,14 +99,14 @@ export class DashboardComponent implements OnInit {
     })
   }
 
-  onSelectBill(bill: any) {
+  onSelectBill(id: number) {
     let arrayToFilter = this.billsToDelete;
-    if (this.billsToDelete.includes(+bill.id)) {
-      this.billsToDelete = arrayToFilter.filter(item => item !== +bill.id);
+    if (this.billsToDelete.includes(id)) {
+      this.billsToDelete = arrayToFilter.filter(item => item !== id);
     } else {
-      this.billsToDelete.push(+bill.id);
+      this.billsToDelete.push(id);
     }
-    console.log(this.billsToDelete);
+    console.log('bills to delete:', this.billsToDelete);
   }
 
   onUpdateBill(bill: any) {
@@ -98,8 +115,12 @@ export class DashboardComponent implements OnInit {
     console.log('bill id:', +bill.id);
   }
 
-  deleteSelectedBills() {
+  deleteSelectedBills(id?: number) {
     console.log('bills to delete:', this.billsToDelete);
+    if (id) {
+      this.billsToDelete.push(id);
+    }
+
     if (this.billsToDelete.length !== 0) {
       this.billService.delete(this.billsToDelete).subscribe(res => {
         console.log(res);
@@ -109,5 +130,52 @@ export class DashboardComponent implements OnInit {
     }
   }
 
-  protected readonly parseInt = parseInt;
+  makeEditable(id: number) {
+    this.editableId = id;
+    console.log(id);
+  }
+
+  getIcon(side: string, id: number) {
+    let icon = '';
+    if (side === 'left') {
+      if (id === this.editableId) {
+        icon = 'check'
+      } else {
+        icon = 'edit'
+      }
+    }
+
+    if (side === 'right') {
+      if (id === this.editableId) {
+        icon = 'close'
+      } else {
+        icon = 'delete'
+      }
+    }
+    return icon;
+  }
+
+  leftFunction(id: number, bill: Bill) {
+    console.log(bill);
+    if (id !== this.editableId) {
+      this.makeEditable(id);
+      return;
+    }
+
+    this.editableId = undefined;
+  }
+
+  rightFunction(id: number) {
+    if (id !== this.editableId) {
+      // this.onSelectBill(id);
+      this.deleteSelectedBills(id);
+      return;
+    }
+
+    this.editableId = undefined;
+  }
+
+  isDisabled(id: number): boolean {
+    return this.editableId !== id;
+  }
 }
