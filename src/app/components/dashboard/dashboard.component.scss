@@ -11,14 +11,75 @@
 
 .bill-hover-menu {
   display: none;
+
+  mat-icon:hover {
+    font-size: 1.8em;
+    cursor: pointer;
+
+    &.check {
+      color: #99d98c;
+    }
+
+    &.edit {
+      color: rgb(208, 255, 255);
+    }
+
+    &.close {
+      color: rgb(255, 131, 131);
+    }
+
+    &.delete {
+      color: rgb(255, 131, 131);
+    }
+  }
+
+  & mat-icon:first-of-type {
+    margin-right: 6px;
+  }
 }
 
-.bill-field.disabled {
-  background: none;
-  border: transparent;
+.bill-field {
+  border-radius: 5px;
+  padding: 2px 4px;
+  &.disabled {
+    background: none;
+    border: 1px solid transparent;
+  }
+
+  &:not(.disabled, .mat-mdc-select) {
+    //cursor: pointer;
+    border: 1px solid rgb(99, 121, 203);
+  }
 }
 
 :host ::ng-deep {
+  .mat-mdc-header-cell:not(:last-of-type) {
+    padding-left: 20px !important;
+  }
+
+  .mat-mdc-cell {
+    width: 20% !important;
+  }
+  //.mat-column-name {
+  //  width: 100px !important;
+  //}
+  //
+  //.mat-column-amount {
+  //  width: 100px !important;
+  //}
+  //
+  //.mat-column-date {
+  //  width: 100px !important;
+  //}
+  //
+  //.mat-column-necessity {
+  //  width: 50px !important;
+  //}
+  //
+  //.mat-column-category {
+  //  width: 100px !important;
+  //}
+
   .mat-mdc-form-field-flex {
     height: 100% !important;
   }
@@ -48,7 +109,6 @@
 
     & tr:hover {
       background-color: #f5f5f5;
-      cursor: pointer;
       box-shadow: 0 2px 1px -1px rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 1px 3px 0px rgba(0, 0, 0, 0.12);
     }
 
@@ -65,8 +125,8 @@
     }
 
     & tr:hover .bill-hover-menu {
-      background-color: #333333;
-      color: white;
+      background-color: #2b2d42;
+      color: #edf2f4;
       position: absolute;
       border-radius: 16px;
       top: -20px;

@@ -28,8 +28,7 @@ export class BillService {
   }
 
   delete(ids: number[]): Observable<any> {
-    console.log('ids joined:', ids.join(','));
-    return this.http.delete('http://localhost:3000/bills/many', {
+    return this.http.delete('http://localhost:3000/bills', {
       params: { ids: ids.join(',') }
     });
   }

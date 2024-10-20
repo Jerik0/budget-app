@@ -23,7 +23,7 @@ router.put('/:id', async (req, res) => {
   res.status(200).json(result);
 });
 
-router.delete('/many', async (req, res) => {
+router.delete('/', async (req, res) => {
   const result = await billRepo.deleteBills(req.query.ids);
   res.status(200).json(result);
 })

@@ -23,6 +23,10 @@ html, body {
     display: flex;
     padding: 0 !important;
   }
+
+  .cdk-overlay-pane {
+    max-width: unset !important;
+  }
 }
 
 //:host ::ng-deep {

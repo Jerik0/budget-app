@@ -1,16 +1,16 @@
 enum Category {
-  Miscellaneous = <any>"miscellaneous",
-  General = <any>"general",
-  Paycheck = <any>"paycheck",
-  VADisability = <any>"va disability",
-  Rent = <any>"rent",
-  Automotive = <any>"automotive",
-  Food = <any>"food",
-  CreditCardPayment = <any>"credit card payment",
-  SavingsDeposit = <any>"savings deposit",
-  SavingsWithdrawal = <any>"savings withdrawal",
-  Child = <any>"child",
-  Pet = <any>"pet",
-  Fun = <any>"fun"
+  Miscellaneous = "miscellaneous",
+  General = "general",
+  Paycheck = "paycheck",
+  VADisability = "va disability",
+  Rent = "rent",
+  Automotive = "automotive",
+  Food = "food",
+  CreditCardPayment = "credit card payment",
+  SavingsDeposit = "savings deposit",
+  SavingsWithdrawal = "savings withdrawal",
+  Child = "child",
+  Pet = "pet",
+  Fun = "fun"
 }
 export default Category;

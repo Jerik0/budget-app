@@ -4,7 +4,7 @@
 
 
 
-  <div id="bills-list-wrapper" class="mat-elevation-z3">
+  <div id="bills-list-wrapper" class="mat-elevation-z2">
 <!--    <form [formGroup]="billForm">-->
 <!--      <mat-form-field appearance="outline" subscriptSizing="dynamic" class="small">-->
 <!--        <input formControlName="name" matInput type="text" placeholder="name">-->
@@ -47,7 +47,10 @@
       <ng-container matColumnDef="necessity">
         <th mat-header-cell *matHeaderCellDef> Necessity </th>
         <td mat-cell *matCellDef="let bill">
-          <input class="bill-field" [ngClass]="{disabled: isDisabled(+bill.id)}" type="text" [value]="bill.necessity" [disabled]="isDisabled(+bill.id)">
+          <mat-select class="bill-field" [(value)]="bill.necessity" [disabled]="isDisabled(+bill.id)">
+            <mat-option [value]="bill.necessity">true</mat-option>
+            <mat-option [value]="bill.necessity">false</mat-option>
+          </mat-select>
         </td>
       </ng-container>
 
@@ -56,13 +59,13 @@
         <td mat-cell *matCellDef="let bill">
 <!--          <input type="text"  [value]="bill.category">-->
 <!--          <mat-form-field>-->
-            <mat-select [(value)]="bill.category" [disabled]="isDisabled(+bill.id)">
-              <mat-option *ngFor="let category of category | keyvalue" [value]="category.value">{{ category.key }}</mat-option>
+            <mat-select class="bill-field" [(value)]="bill.category" [disabled]="isDisabled(+bill.id)">
+              <mat-option *ngFor="let category of category | keyvalue" [value]="category.value">{{ category.value }}</mat-option>
             </mat-select>
 <!--          </mat-form-field>-->
           <div class="bill-hover-menu">
-            <mat-icon [fontIcon]="getIcon('left', +bill.id)" (click)="leftFunction(+bill.id, bill)"></mat-icon>
-            <mat-icon [fontIcon]="getIcon('right', +bill.id)" (click)="rightFunction(+bill.id)"></mat-icon>
+            <mat-icon [ngClass]="getIcon('left', +bill.id)" [fontIcon]="getIcon('left', +bill.id)" (click)="leftFunction(+bill.id, bill)"></mat-icon>
+            <mat-icon [ngClass]="getIcon('right', +bill.id)" [fontIcon]="getIcon('right', +bill.id)" (click)="rightFunction(+bill.id)"></mat-icon>
           </div>
         </td>
       </ng-container>
