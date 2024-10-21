@@ -16,7 +16,7 @@ import {
   MatTable,
   MatTableDataSource
 } from "@angular/material/table";
-import {FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
+import {FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
 import {MatFormField} from "@angular/material/form-field";
 import {MatInput} from "@angular/material/input";
 import {KeyValuePipe, NgClass, NgForOf, NgIf, NgTemplateOutlet} from "@angular/common";
@@ -24,6 +24,7 @@ import {MatIcon, MatIconModule} from "@angular/material/icon";
 import {MatOption, MatSelect} from "@angular/material/select";
 import {MatDialog} from "@angular/material/dialog";
 import {MatMenu, MatMenuContent, MatMenuItem, MatMenuTrigger} from "@angular/material/menu";
+import category from "../../enums/Category";
 
 @Component({
   selector: 'app-dashboard',
@@ -73,17 +74,29 @@ export class DashboardComponent implements OnInit {
   readonly dialog = inject(MatDialog);
 
   constructor(private billService: BillService, public fb: FormBuilder) {
-    this.billForm = fb.group({
-      name: ['', Validators.required],
-      amount: ['', Validators.required],
-      date: ['', Validators.required],
-      necessity: ['', Validators.required],
-      category: ['', Validators.required]
-    })
+    this.billForm = this.fb.group({
+      bills: this.fb.array([])
+    });
   }
 
   ngOnInit(): void {
     this.getBillsList();
+  }
+
+  addBillToFormGroup(bill: any) {
+    const billGroup = this.fb.group({
+      name: bill.name,
+      amount: bill.amount,
+      date: bill.date,
+      necessity: bill.necessity,
+      category: bill.category
+    });
+
+    this.billsArray.push(billGroup);
+  }
+
+  get billsArray(): FormArray {
+    return this.billForm.get('bills') as FormArray;
   }
 
   onAddBill() {
@@ -104,6 +117,10 @@ export class DashboardComponent implements OnInit {
       // @ts-ignore
       this.dataSource.data = res;
       console.log('bills:', res);
+
+      this.dataSource.data.forEach(bill => {
+        this.addBillToFormGroup(bill);
+      })
     })
   }
 
@@ -118,8 +135,10 @@ export class DashboardComponent implements OnInit {
   }
 
   onUpdateBill(bill: any) {
-    const updatedBill = new Bill(bill.name, bill.amount, bill.date, !!bill.necessity, bill.category);
-    console.log(updatedBill);
+    console.log('bill:', bill);
+    // const updatedBill = new Bill(bill.name, bill.amount, bill.date, !!bill.necessity, bill.category);
+    // this.billService.updateBill(+bill.id, bill);
+    // console.log(updatedBill);
     console.log('bill id:', +bill.id);
   }
 
@@ -169,6 +188,8 @@ export class DashboardComponent implements OnInit {
       this.makeEditable(id);
       return;
     }
+
+    this.onUpdateBill(bill);
 
     this.editableId = undefined;
   }
