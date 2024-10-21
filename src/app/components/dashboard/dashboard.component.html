@@ -91,7 +91,7 @@
 
               <mat-icon
                 [matMenuTriggerFor]="editableId !== +bill.id ? confirmMenu : null"
-                [matMenuTriggerData]="bill"
+                [matMenuTriggerData]="{bill, i}"
                 [ngClass]="getIcon('right', +bill.id)"
                 [fontIcon]="getIcon('right', +bill.id)"
                 (click)="handleUpdateBill(+bill.id, i, false)">
@@ -112,11 +112,11 @@
 </div>
 
 <mat-menu class="confirm-menu" overlapTrigger="true" #confirmMenu="matMenu" yPosition="above" xPosition="before">
-  <ng-template matMenuContent let-name="name" let-id="id">
+  <ng-template matMenuContent let-bill="bill" let-i="i">
     <div>
-      <span class="confirm-menu-text">Are you sure you want to delete {{name}}?</span>
-      <button class="confirm-menu-btn" mat-button (click)="deleteSelectedBills(+id)">Yes</button>
-      <button class="confirm-menu-btn" mat-button #noButton>No</button>
+      <span class="confirm-menu-text">Are you sure you want to delete {{bill.name}}?</span>
+      <button class="confirm-menu-btn" mat-button (click)="deleteSelectedBills(+bill.id)">Yes</button>
+      <button class="confirm-menu-btn" mat-button (click)="handleUpdateBill(+bill.id, i, false)">No</button>
     </div>
   </ng-template>
 </mat-menu>

@@ -153,28 +153,15 @@ export class DashboardComponent implements OnInit {
 
     if (this.billsToDelete.length !== 0) {
       this.billService.delete(this.billsToDelete).subscribe(res => {
-        console.log(res);
         this.billsToDelete = [];
         this.getBillsList();
       });
     }
   }
 
-  toggleEditable(id: number, billIndex: number) {
-    if (id !== this.editableId)  {
-      this.editableId = id;
-      this.billsArray.controls[billIndex].enable();
-    } else {
-      this.editableId = undefined;
-      this.billsArray.controls[billIndex].disable();
-    }
-  }
-
   // menu
   handleUpdateBill(id: number, billIndex: number, update: boolean) {
     let updatedBill = this.billsArray.controls[billIndex].value;
-
-    console.log(update);
 
     this.billService.getBillById(id).subscribe(originalBill => {
       // compare incoming bill to the bill from the database
@@ -188,7 +175,20 @@ export class DashboardComponent implements OnInit {
       }
     });
 
+    // if clicking the delete button, don't make row editable
+    if(this.getIcon('right', id) === 'delete' && !update) return;
+
     this.toggleEditable(id, billIndex);
+  }
+
+  toggleEditable(id: number, billIndex: number) {
+    if (id !== this.editableId)  {
+      this.editableId = id;
+      this.billsArray.controls[billIndex].enable();
+    } else {
+      this.editableId = undefined;
+      this.billsArray.controls[billIndex].disable();
+    }
   }
 
   isDisabled(id: number): boolean {
