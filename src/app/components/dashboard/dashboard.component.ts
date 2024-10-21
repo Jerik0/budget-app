@@ -106,9 +106,14 @@ export class DashboardComponent implements OnInit {
     this.billService.createBill(bill).subscribe(res => {
       // copy data, update it, assign back to dataSource.data
       let updatedData = this.dataSource.data;
+
       updatedData.push(res);
+
       this.dataSource.data = updatedData;
+
       console.log('bill created:', res);
+
+      this.updateBillFormGroup();
     });
   }
 
@@ -118,9 +123,7 @@ export class DashboardComponent implements OnInit {
       this.dataSource.data = res;
       console.log('bills:', res);
 
-      this.dataSource.data.forEach(bill => {
-        this.addBillToFormGroup(bill);
-      })
+      this.updateBillFormGroup();
     })
   }
 
@@ -207,5 +210,17 @@ export class DashboardComponent implements OnInit {
 
   isDisabled(id: number): boolean {
     return this.editableId !== id;
+  }
+
+  seeFormGroup() {
+    console.log(this.billForm);
+  }
+
+  updateBillFormGroup() {
+    this.billsArray.clear();
+
+    this.dataSource.data.forEach(bill => {
+      this.addBillToFormGroup(bill);
+    })
   }
 }
