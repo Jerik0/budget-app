@@ -163,8 +163,6 @@ export class DashboardComponent implements OnInit {
   handleUpdateBill(billIndex: number, update: boolean) {
     let updatedBill = this.billsArray.controls[billIndex].value;
 
-    console.log(updatedBill.id);
-
     this.billService.getBillById(updatedBill.id).subscribe(originalBill => {
       // compare incoming bill to the bill from the database
       if (JSON.stringify(originalBill) !== JSON.stringify(updatedBill) && update) {
