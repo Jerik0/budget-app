@@ -23,8 +23,9 @@ export class BillService {
     return this.http.get(`http://localhost:3000/bills/${id}`);
   }
 
-  updateBill(id: number, bill: Bill) {
-    return this.http.put(`http://localhost:3000/bills/${id}`, bill);
+  updateBill(bill: any) {
+    console.log(bill.id);
+    return this.http.put(`http://localhost:3000/bills/${bill.id}`, bill);
   }
 
   delete(ids: number[]): Observable<any> {

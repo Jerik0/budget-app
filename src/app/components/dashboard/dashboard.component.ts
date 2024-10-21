@@ -160,15 +160,17 @@ export class DashboardComponent implements OnInit {
   }
 
   // menu
-  handleUpdateBill(id: number, billIndex: number, update: boolean) {
+  handleUpdateBill(billIndex: number, update: boolean) {
     let updatedBill = this.billsArray.controls[billIndex].value;
 
-    this.billService.getBillById(id).subscribe(originalBill => {
+    console.log(updatedBill.id);
+
+    this.billService.getBillById(updatedBill.id).subscribe(originalBill => {
       // compare incoming bill to the bill from the database
       if (JSON.stringify(originalBill) !== JSON.stringify(updatedBill) && update) {
 
         // update bill if they are not the same, and if user wants to update
-        this.billService.updateBill(id, updatedBill).subscribe(res => {
+        this.billService.updateBill(updatedBill).subscribe(res => {
           console.log('bill updated with new values:', updatedBill);
           this.getBillsList();
         })
@@ -176,9 +178,9 @@ export class DashboardComponent implements OnInit {
     });
 
     // if clicking the delete button, don't make row editable
-    if(this.getIcon('right', id) === 'delete' && !update) return;
+    if(this.getIcon('right', updatedBill.id) === 'delete' && !update) return;
 
-    this.toggleEditable(id, billIndex);
+    this.toggleEditable(updatedBill.id, billIndex);
   }
 
   toggleEditable(id: number, billIndex: number) {
@@ -225,5 +227,15 @@ export class DashboardComponent implements OnInit {
     this.dataSource.data.forEach(bill => {
       this.addBillToFormGroup(bill);
     })
+  }
+
+  checkIfUpdatingData(event: any, billIndex: number) {
+    if (event.key === 'Enter') {
+      this.handleUpdateBill(billIndex, true);
+    }
+
+    if (event.key === 'Escape') {
+      this.handleUpdateBill(billIndex, false);
+    }
   }
 }

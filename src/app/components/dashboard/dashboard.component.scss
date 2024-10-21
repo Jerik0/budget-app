@@ -9,6 +9,12 @@
   height: 524px;
 }
 
+#top-actions-container {
+  margin-bottom: 10px;
+  display: flex;
+
+}
+
 .bill-hover-menu {
   display: none;
 
@@ -17,7 +23,7 @@
     cursor: pointer;
 
     &.check {
-      color: #99d98c;
+      color: $primary-confirm;
     }
 
     &.edit {
@@ -25,11 +31,11 @@
     }
 
     &.close {
-      color: rgb(255, 131, 131);
+      color: $primary-danger;
     }
 
     &.delete {
-      color: rgb(255, 131, 131);
+      color: $primary-danger;
     }
   }
 
@@ -46,12 +52,19 @@
     border: 1px solid transparent;
   }
 
+  // fields that are enabled
   &:not(.disabled, .mat-mdc-select) {
-    //cursor: pointer;
-    border: 1px solid rgb(99, 121, 203);
+    border: 1px solid $teal-light;
+    box-shadow: inset 3px 3px 6px 1px rgb(0 0 0 / 20%);
+    font-style: italic;
+
+    &:focus-visible {
+      outline-color: $primary-warn !important;
+    }
   }
 }
 
+// any angular material components go here
 :host ::ng-deep {
   .mat-mdc-header-cell:not(:last-of-type) {
     padding-left: 20px !important;
@@ -93,11 +106,6 @@
   }
 
   #bills-table {
-    //height: 100%;
-    th {
-      //z-index: unset !important;
-    }
-
     td.mat-mdc-cell {
       position: relative;
       overflow: visible;
@@ -108,21 +116,21 @@
     }
 
     & tr:hover {
-      background-color: #f5f5f5;
+      background-color: $primary-ghost;
       box-shadow: 0 2px 1px -1px rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 1px 3px 0px rgba(0, 0, 0, 0.12);
     }
 
-    & tr.selected {
-      background-color: #f5f5f5;
-      font-style: italic;
-      color: #fa6060;
-      outline: 2px dashed #ff5867;
-      outline-offset: -5px;
-
-      &:hover {
-        background-color: #e3e3e3;
-      }
-    }
+    //& tr.selected {
+    //  background-color: #f5f5f5;
+    //  font-style: italic;
+    //  color: $primary-danger;
+    //  outline: 2px dashed $primary-danger;
+    //  outline-offset: -5px;
+    //
+    //  &:hover {
+    //    background-color: #e3e3e3;
+    //  }
+    //}
 
     & tr:hover .bill-hover-menu {
       background-color: #2b2d42;
@@ -156,7 +164,14 @@
   }
 }
 
-
+#confirm-menu-bill-name {
+  background-color: #f5f5f5;
+  padding: 5px;
+  margin: 0 5px;
+  border-radius: 5px;
+  color: $primary-dark;
+  font-weight: bold;
+}
 
 .confirm-menu-btn.mdc-button  {
   color: #fff !important;
@@ -166,7 +181,7 @@
   min-height: 36px;
 
   &:first-of-type:hover {
-    background-color: #fa6060;
+    background-color: $primary-danger;
   }
 
   &:hover {
@@ -183,14 +198,14 @@
 
   .confirm-menu {
     .confirm-menu-text {
-      color: rgb(255, 131, 131);
+      color: $primary-danger;
       margin-right: 5px;
     }
   }
 
   .mat-mdc-menu-panel.confirm-menu {
     padding: 0 10px;
-    background-color: rgba(43, 45, 66, 0.75) !important;
+    background-color: rgba(43, 43, 44, 0.75) !important;
     color: #e3e3e3 !important;
     max-width: unset !important;
 
