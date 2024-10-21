@@ -41,6 +41,7 @@ const findById = async (id) => {
 
   try {
     const result = await db.query(query, [+id]);
+    console.log('result from repo: ', result.rows[0]);
     return result.rows[0];
   } catch (e) {
     console.log(e);

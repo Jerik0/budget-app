@@ -1,4 +1,4 @@
-import {Component, ElementRef, inject, OnInit, ViewChild} from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import {BillService} from "../../services/bill.service";
 import {MatButton} from "@angular/material/button";
 import {Bill} from "../../models/Bill";
@@ -16,7 +16,15 @@ import {
   MatTable,
   MatTableDataSource
 } from "@angular/material/table";
-import {FormArray, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
+import {
+  FormArray,
+  FormBuilder,
+  FormControl,
+  FormGroup,
+  FormsModule,
+  ReactiveFormsModule,
+  Validators
+} from "@angular/forms";
 import {MatFormField} from "@angular/material/form-field";
 import {MatInput} from "@angular/material/input";
 import {KeyValuePipe, NgClass, NgForOf, NgIf, NgTemplateOutlet} from "@angular/common";
@@ -24,7 +32,6 @@ import {MatIcon, MatIconModule} from "@angular/material/icon";
 import {MatOption, MatSelect} from "@angular/material/select";
 import {MatDialog} from "@angular/material/dialog";
 import {MatMenu, MatMenuContent, MatMenuItem, MatMenuTrigger} from "@angular/material/menu";
-import category from "../../enums/Category";
 
 @Component({
   selector: 'app-dashboard',
@@ -80,18 +87,20 @@ export class DashboardComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    console.log('============ BILLS LIST PAGE LOADED =============')
     this.getBillsList();
   }
 
   addBillToFormGroup(bill: any) {
     const billGroup = this.fb.group({
-      name: bill.name,
-      amount: bill.amount,
-      date: bill.date,
-      necessity: bill.necessity,
-      category: bill.category
+      id: new FormControl(bill.id, [Validators.required]),
+      name: new FormControl(bill.name, [Validators.required]),
+      amount: new FormControl(bill.amount, [Validators.required]),
+      date: new FormControl(bill.date, [Validators.required]),
+      necessity: new FormControl(bill.necessity, [Validators.required]),
+      category: new FormControl(bill.category, [Validators.required]),
     });
-
+    billGroup.disable();
     this.billsArray.push(billGroup);
   }
 
@@ -121,7 +130,6 @@ export class DashboardComponent implements OnInit {
     this.billService.getAllBills().subscribe(res => {
       // @ts-ignore
       this.dataSource.data = res;
-      console.log('bills:', res);
 
       this.updateBillFormGroup();
     })
@@ -135,14 +143,6 @@ export class DashboardComponent implements OnInit {
       this.billsToDelete.push(id);
     }
     console.log('bills to delete:', this.billsToDelete);
-  }
-
-  onUpdateBill(bill: any) {
-    console.log('bill:', bill);
-    // const updatedBill = new Bill(bill.name, bill.amount, bill.date, !!bill.necessity, bill.category);
-    // this.billService.updateBill(+bill.id, bill);
-    // console.log(updatedBill);
-    console.log('bill id:', +bill.id);
   }
 
   deleteSelectedBills(id?: number) {
@@ -160,9 +160,39 @@ export class DashboardComponent implements OnInit {
     }
   }
 
-  makeEditable(id: number) {
-    this.editableId = id;
-    console.log('editableId:', this.editableId);
+  toggleEditable(id: number, billIndex: number) {
+    if (id !== this.editableId)  {
+      this.editableId = id;
+      this.billsArray.controls[billIndex].enable();
+    } else {
+      this.editableId = undefined;
+      this.billsArray.controls[billIndex].disable();
+    }
+  }
+
+  // menu
+  handleUpdateBill(id: number, billIndex: number, update: boolean) {
+    let updatedBill = this.billsArray.controls[billIndex].value;
+
+    console.log(update);
+
+    this.billService.getBillById(id).subscribe(originalBill => {
+      // compare incoming bill to the bill from the database
+      if (JSON.stringify(originalBill) !== JSON.stringify(updatedBill) && update) {
+
+        // update bill if they are not the same, and if user wants to update
+        this.billService.updateBill(id, updatedBill).subscribe(res => {
+          console.log('bill updated with new values:', updatedBill);
+          this.getBillsList();
+        })
+      }
+    });
+
+    this.toggleEditable(id, billIndex);
+  }
+
+  isDisabled(id: number): boolean {
+    return this.editableId !== id;
   }
 
   getIcon(side: string, id: number) {
@@ -183,33 +213,6 @@ export class DashboardComponent implements OnInit {
       }
     }
     return icon;
-  }
-
-  leftFunction(id: number, bill: Bill) {
-    console.log(bill);
-    if (id !== this.editableId) {
-      this.makeEditable(id);
-      return;
-    }
-
-    this.onUpdateBill(bill);
-
-    this.editableId = undefined;
-  }
-
-  rightFunction(id: number, bill: Bill) {
-    if (id !== this.editableId) {
-      // this.onSelectBill(id);
-      // this.deleteSelectedBills(id);
-      // this.openConfirmDialog(bill);
-      return;
-    }
-
-    this.editableId = undefined;
-  }
-
-  isDisabled(id: number): boolean {
-    return this.editableId !== id;
   }
 
   seeFormGroup() {

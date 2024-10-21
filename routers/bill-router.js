@@ -14,6 +14,7 @@ router.get('/', async (req, res) => {
 });
 
 router.get('/:id', async (req, res) => {
+  console.log(+req.params.id);
   const result = await billRepo.findById(+req.params.id);
   res.status(200).json(result);
 });
