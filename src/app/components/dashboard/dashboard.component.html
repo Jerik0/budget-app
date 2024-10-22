@@ -15,7 +15,6 @@
             <div formArrayName="bills">
               <div [formGroupName]="i">
                 <input formControlName="name"
-                       (keydown)="checkIfUpdatingData($event, i)"
                        class="bill-field"
                        [ngClass]="{disabled: isDisabled(+bill.id)}"
                        type="text"
@@ -33,7 +32,6 @@
             <div formArrayName="bills">
               <div [formGroupName]="i">
                 <input formControlName="amount"
-                       (keydown)="checkIfUpdatingData($event, i)"
                        class="bill-field"
                        [ngClass]="{disabled: isDisabled(+bill.id)}"
                        type="text"
@@ -51,7 +49,6 @@
             <div formArrayName="bills">
               <div [formGroupName]="i">
                 <input formControlName="date"
-                       (keydown)="checkIfUpdatingData($event, i)"
                        class="bill-field"
                        [ngClass]="{disabled: isDisabled(+bill.id)}"
                        type="text"
@@ -69,7 +66,6 @@
             <div formArrayName="bills">
               <div [formGroupName]="i">
                 <mat-select
-                    (keydown)="checkIfUpdatingData($event, i)"
                     formControlName="necessity"
                     class="bill-field"
                     [(value)]="bill.necessity">
@@ -90,7 +86,6 @@
               <div [formGroupName]="i">
                 <mat-select
                     formControlName="category"
-                    (keydown)="checkIfUpdatingData($event, i)"
                     class="bill-field"
                     [(value)]="bill.category">
                   <mat-option *ngFor="let category of category | keyvalue" [value]="category.value">{{ category.value }}</mat-option>
@@ -102,14 +97,14 @@
               <mat-icon
                 [ngClass]="getIcon('left', +bill.id)"
                 [fontIcon]="getIcon('left', +bill.id)"
-                (click)="handleUpdateBill(i, true)">
+                (click)="handleBillEdit(billsArray.controls[i], true, i)">
               </mat-icon>
               <mat-icon
                 [matMenuTriggerFor]="editableId !== +bill.id ? confirmMenu : null"
                 [matMenuTriggerData]="{bill, i}"
                 [ngClass]="getIcon('right', +bill.id)"
                 [fontIcon]="getIcon('right', +bill.id)"
-                (click)="handleUpdateBill(i, false)">
+                (click)="handleBillEdit(billsArray.controls[i], false, i)">
               </mat-icon>
             </div>
 
@@ -132,7 +127,7 @@
     <div>
       <span class="confirm-menu-text">Are you sure you want to delete <span id="confirm-menu-bill-name">{{bill.name}}</span>?</span>
       <button class="confirm-menu-btn" mat-button (click)="deleteSelectedBills(+bill.id)">Yes</button>
-      <button class="confirm-menu-btn" mat-button (click)="handleUpdateBill(i, false)">No</button>
+      <button class="confirm-menu-btn" mat-button (click)="handleBillEdit(billsArray.controls[i], false, i)">No</button>
     </div>
   </ng-template>
 </mat-menu>

@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import {Component, HostListener, inject, OnInit} from '@angular/core';
 import {BillService} from "../../services/bill.service";
 import {MatButton} from "@angular/material/button";
 import {Bill} from "../../models/Bill";
@@ -91,17 +91,53 @@ export class DashboardComponent implements OnInit {
     this.getBillsList();
   }
 
-  addBillToFormGroup(bill: any) {
-    const billGroup = this.fb.group({
-      id: new FormControl(bill.id, [Validators.required]),
-      name: new FormControl(bill.name, [Validators.required]),
-      amount: new FormControl(bill.amount, [Validators.required]),
-      date: new FormControl(bill.date, [Validators.required]),
-      necessity: new FormControl(bill.necessity, [Validators.required]),
-      category: new FormControl(bill.category, [Validators.required]),
+  @HostListener('window:keydown', ['$event'])
+  onKeyDown(event: KeyboardEvent) {
+
+    if (event.key === 'Escape') {
+      if (this.editableId !== undefined) {
+        // this.getEnabledBill();
+        this.resetBillFormValues();
+        this.toggleBillEnabled(this.getEnabledBill());
+      }
+    }
+
+  }
+
+  getEnabledBill() {
+    let activeBill;
+    this.billsArray.controls.map((a: any, index) => {
+      if (a.enabled) {
+        activeBill = a;
+      }
     });
-    billGroup.disable();
-    this.billsArray.push(billGroup);
+
+    return activeBill;
+  }
+
+  toggleBillEnabled(billForm: any) {
+    if (this.editableId === billForm.value.id) {
+      this.editableId = undefined;
+    } else {
+      this.editableId = billForm.value.id;
+    }
+
+    console.log('=== toggleBillEnabled called ===');
+
+    if (billForm.enabled) {
+      billForm.disable();
+    } else {
+      billForm.enable();
+    }
+
+    // if (billForm.disabled) {
+    //   billForm.enable();
+    // } else {
+    //   billForm.disable();
+    // }
+
+    console.log('billForm.disabled:', billForm.disabled);
+    console.log('editableId', this.editableId);
   }
 
   get billsArray(): FormArray {
@@ -115,14 +151,16 @@ export class DashboardComponent implements OnInit {
     this.billService.createBill(bill).subscribe(res => {
       // copy data, update it, assign back to dataSource.data
       let updatedData = this.dataSource.data;
-
       updatedData.push(res);
 
       this.dataSource.data = updatedData;
 
+      console.log(this.dataSource.data);
+
       console.log('bill created:', res);
 
       this.updateBillFormGroup();
+      this.billForm.disable();
     });
   }
 
@@ -133,6 +171,38 @@ export class DashboardComponent implements OnInit {
 
       this.updateBillFormGroup();
     })
+  }
+
+  clearFormArray(formArray: FormArray) {
+    formArray = this.fb.array([]);
+  }
+
+  updateBillFormGroup() {
+    this.billsArray.clear();
+
+    console.log(this.billsArray);
+
+    this.dataSource.data.forEach(bill => {
+      this.addBillToFormGroup(bill);
+    })
+
+    // this.editableId = undefined;
+    console.log(this.billsArray);
+  }
+
+  addBillToFormGroup(bill: any) {
+    const billGroup = this.fb.group({
+      id: new FormControl(bill.id, [Validators.required]),
+      name: new FormControl(bill.name, [Validators.required]),
+      amount: new FormControl(bill.amount, [Validators.required]),
+      date: new FormControl(bill.date, [Validators.required]),
+      necessity: new FormControl(bill.necessity, [Validators.required]),
+      category: new FormControl(bill.category, [Validators.required]),
+    });
+    billGroup.disable();
+    // this.editableId = undefined;
+    // this.toggleBillEnabled(billGroup);
+    this.billsArray.push(billGroup);
   }
 
   onSelectBill(id: number) {
@@ -146,56 +216,87 @@ export class DashboardComponent implements OnInit {
   }
 
   deleteSelectedBills(id?: number) {
-    console.log('bills to delete:', this.billsToDelete);
     if (id) {
       this.billsToDelete.push(id);
     }
 
     if (this.billsToDelete.length !== 0) {
-      this.billService.delete(this.billsToDelete).subscribe(res => {
+      this.billService.delete(this.billsToDelete).subscribe(() => {
         this.billsToDelete = [];
         this.getBillsList();
       });
     }
   }
 
+  handleBillEdit(updatedBillForm: any, update: boolean, index: number) {
+    console.log('=== handleBillEdit called ===')
+    console.log('first block passed: ', this.getEnabledBill() && this.editableId !== updatedBillForm.value.id);
+    console.log('second block passed:', !update);
+    console.log('updatedBillForm.value.id:', updatedBillForm.value.id);
+
+
+    // reset previously enabled row if it's not the current one.
+    if (this.getEnabledBill() && this.editableId !== updatedBillForm.value.id) {
+      this.editableId = undefined;
+      this.resetBillFormValues(this.getEnabledBill());
+      // @ts-ignore
+      this.getEnabledBill().disable();
+    }
+
+    // if not updating we can just reset everything and exit.
+    if (!update) {
+      let billToReset = this.getEnabledBill() ? this.getEnabledBill() : updatedBillForm;
+      this.resetBillFormValues(billToReset);
+      // @ts-ignore
+      billToReset.disable();
+      this.editableId = undefined;
+      return;
+    }
+
+    this.toggleBillEnabled(updatedBillForm);
+    this.handleUpdateBill(updatedBillForm, update);
+  }
+
   // menu
-  handleUpdateBill(billIndex: number, update: boolean) {
-    let updatedBill = this.billsArray.controls[billIndex].value;
+  handleUpdateBill(billForm: any, update: boolean) {
+
+    if(!update) return;
+
+    // @ts-ignore
+    let updatedBill = billForm.value;
 
     this.billService.getBillById(updatedBill.id).subscribe(originalBill => {
       // compare incoming bill to the bill from the database
-      if (JSON.stringify(originalBill) !== JSON.stringify(updatedBill) && update) {
-
+      if (JSON.stringify(originalBill) !== JSON.stringify(updatedBill)) {
         // update bill if they are not the same, and if user wants to update
-        this.billService.updateBill(updatedBill).subscribe(res => {
+        this.billService.updateBill(updatedBill).subscribe(() => {
           console.log('bill updated with new values:', updatedBill);
           this.getBillsList();
+
+          // this.resetBillFormValues();
+          billForm.disable();
+          this.editableId = undefined;
         })
       }
     });
-
-    // if clicking the delete button, don't make row editable
-    if(this.getIcon('right', updatedBill.id) === 'delete' && !update) return;
-
-    this.toggleEditable(updatedBill.id, billIndex);
   }
 
-  toggleEditable(id: number, billIndex: number) {
-    if (id !== this.editableId)  {
-      this.editableId = id;
-      this.billsArray.controls[billIndex].enable();
-    } else {
-      this.editableId = undefined;
-      this.billsArray.controls[billIndex].disable();
-    }
+  resetBillFormValues(billForm?: any) {
+    billForm = this.getEnabledBill() === undefined ? billForm : this.getEnabledBill();
+    // @ts-ignore
+    let updatedBill = billForm.value;
+
+    this.billService.getBillById(updatedBill.id).subscribe(bill => {
+      // @ts-ignore
+      return billForm.patchValue(bill);
+    })
   }
 
   isDisabled(id: number): boolean {
     return this.editableId !== id;
   }
 
-  getIcon(side: string, id: number) {
+  getIcon(side: string, id?: number) {
     let icon = '';
     if (side === 'left') {
       if (id === this.editableId) {
@@ -219,21 +320,4 @@ export class DashboardComponent implements OnInit {
     console.log(this.billForm);
   }
 
-  updateBillFormGroup() {
-    this.billsArray.clear();
-
-    this.dataSource.data.forEach(bill => {
-      this.addBillToFormGroup(bill);
-    })
-  }
-
-  checkIfUpdatingData(event: any, billIndex: number) {
-    if (event.key === 'Enter') {
-      this.handleUpdateBill(billIndex, true);
-    }
-
-    if (event.key === 'Escape') {
-      this.handleUpdateBill(billIndex, false);
-    }
-  }
 }
