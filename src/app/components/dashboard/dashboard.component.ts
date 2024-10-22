@@ -122,22 +122,11 @@ export class DashboardComponent implements OnInit {
       this.editableId = billForm.value.id;
     }
 
-    console.log('=== toggleBillEnabled called ===');
-
     if (billForm.enabled) {
       billForm.disable();
     } else {
       billForm.enable();
     }
-
-    // if (billForm.disabled) {
-    //   billForm.enable();
-    // } else {
-    //   billForm.disable();
-    // }
-
-    console.log('billForm.disabled:', billForm.disabled);
-    console.log('editableId', this.editableId);
   }
 
   get billsArray(): FormArray {
@@ -163,22 +152,14 @@ export class DashboardComponent implements OnInit {
     })
   }
 
-  clearFormArray(formArray: FormArray) {
-    formArray = this.fb.array([]);
-  }
-
   updateBillFormGroup() {
     this.billsArray.clear();
 
     console.log(this.billsArray);
 
     this.dataSource.data.forEach(bill => {
-      console.log(bill);
       this.addBillToFormGroup(bill);
     })
-
-    // this.editableId = undefined;
-    console.log('billsArray after update: ', this.billsArray);
   }
 
   addBillToFormGroup(bill: any) {
