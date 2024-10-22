@@ -32,6 +32,8 @@ import {MatIcon, MatIconModule} from "@angular/material/icon";
 import {MatOption, MatSelect} from "@angular/material/select";
 import {MatDialog} from "@angular/material/dialog";
 import {MatMenu, MatMenuContent, MatMenuItem, MatMenuTrigger} from "@angular/material/menu";
+import {SelectionModel} from "@angular/cdk/collections";
+import {MatCheckbox} from "@angular/material/checkbox";
 
 @Component({
   selector: 'app-dashboard',
@@ -64,7 +66,8 @@ import {MatMenu, MatMenuContent, MatMenuItem, MatMenuTrigger} from "@angular/mat
     MatMenuTrigger,
     MatMenuContent,
     MatMenuItem,
-    NgTemplateOutlet
+    NgTemplateOutlet,
+    MatCheckbox
   ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss'
@@ -76,8 +79,9 @@ export class DashboardComponent implements OnInit {
   billsToDelete: number[] = [];
   editableId: number | undefined;
   dataSource = new MatTableDataSource<any>();
-  columnsToDisplay = ['name', 'amount', 'date', 'necessity', 'category'];
+  columnsToDisplay = ['select',  'name', 'amount', 'date', 'necessity', 'category'];
   billForm: FormGroup;
+  selection = new SelectionModel<any>(true, []);
   readonly dialog = inject(MatDialog);
 
   constructor(private billService: BillService, public fb: FormBuilder) {
@@ -99,6 +103,12 @@ export class DashboardComponent implements OnInit {
         // this.getEnabledBill();
         this.resetBillFormValues();
         this.toggleBillEnabled(this.getEnabledBill());
+      }
+    }
+
+    if (event.key === 'Enter') {
+      if (this.editableId !== undefined) {
+        this.handleBillEdit(this.getEnabledBill(), true);
       }
     }
 
@@ -139,6 +149,8 @@ export class DashboardComponent implements OnInit {
     let bill = new Bill('test name', '$10.00', currentDate, true, Category.General);
 
     this.billService.createBill(bill).subscribe(res => {
+      this.selection.clear();
+      this.billsToDelete = [];
       this.getBillsList();
     });
   }
@@ -147,15 +159,12 @@ export class DashboardComponent implements OnInit {
     this.billService.getAllBills().subscribe(res => {
       // @ts-ignore
       this.dataSource.data = res;
-
       this.updateBillFormGroup();
     })
   }
 
   updateBillFormGroup() {
     this.billsArray.clear();
-
-    console.log(this.billsArray);
 
     this.dataSource.data.forEach(bill => {
       this.addBillToFormGroup(bill);
@@ -175,14 +184,46 @@ export class DashboardComponent implements OnInit {
     this.billsArray.push(billGroup);
   }
 
-  onSelectBill(id: number) {
+  onSelectBill(row: any) {
+    this.selection.toggle(row);
     let arrayToFilter = this.billsToDelete;
-    if (this.billsToDelete.includes(id)) {
-      this.billsToDelete = arrayToFilter.filter(item => item !== id);
+    if (this.billsToDelete.includes(row.id)) {
+      this.billsToDelete = arrayToFilter.filter(item => item !== row.id);
     } else {
-      this.billsToDelete.push(id);
+      this.billsToDelete.push(row.id);
     }
     console.log('bills to delete:', this.billsToDelete);
+  }
+
+  /** Selects all rows if they are not all selected; otherwise clear selection. */
+  toggleAllRows() {
+    if (this.isAllSelected()) {
+      this.billsToDelete = [];
+      this.selection.clear();
+      return;
+    }
+
+    this.dataSource.data.map(bill => {
+      if (!this.billsToDelete.includes(bill.id)) {
+        this.billsToDelete.push(bill.id);
+      }
+    })
+
+    this.selection.select(...this.dataSource.data);
+  }
+
+  isAllSelected() {
+    const numSelected = this.selection.selected.length;
+    const numRows = this.dataSource.data.length;
+    return numSelected === numRows;
+  }
+
+  /** The label for the checkbox on the passed row */
+  checkboxLabel(row?: any): string {
+    if (!row) {
+      return `${this.isAllSelected() ? 'deselect' : 'select'} all`;
+    }
+    return `${this.selection.isSelected(row) ? 'deselect' : 'select'} row ${row.id + 1}`;
   }
 
   deleteSelectedBills(id?: number) {
@@ -193,12 +234,13 @@ export class DashboardComponent implements OnInit {
     if (this.billsToDelete.length !== 0) {
       this.billService.delete(this.billsToDelete).subscribe(() => {
         this.billsToDelete = [];
+        this.selection.clear();
         this.getBillsList();
       });
     }
   }
 
-  handleBillEdit(updatedBillForm: any, update: boolean, index: number) {
+  handleBillEdit(updatedBillForm: any, update: boolean) {
     console.log('=== handleBillEdit called ===')
     console.log('is a bill enabled AND it isnt this bill?: ', this.getEnabledBill() && this.editableId !== updatedBillForm.value.id);
     console.log('are updating:', !update);

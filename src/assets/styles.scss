@@ -19,6 +19,14 @@ html, body {
 
 :host ::ng-deep {
   --mat-form-field-container-height: 40px;
+  //--mdc-checkbox-selected-icon-color: $primary-danger;
+  //--mdc-checkbox-selected-focus-icon-color: $primary-danger;
+  //--mdc-slider-focus-handle-color: $primary-danger;
+  //--mdc-checkbox-selected-focus-state-layer-color: $primary-danger;
+  //
+  //--mdc-circular-progress-active-indicator-color: transparent;
+  //--mat-full-pseudo-checkbox-selected-icon-color: $primary-danger;
+  //--mdc-checkbox-selected-pressed-state-layer-color: $primary-danger;
 
   .mat-mdc-form-field-infix {
     display: flex;
