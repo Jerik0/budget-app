@@ -138,7 +138,6 @@ export class DashboardComponent implements OnInit {
     let bill = new Bill('test name', '$10.00', currentDate, true, Category.General);
 
     this.billService.createBill(bill).subscribe(res => {
-      this.updateBillFormGroup();
       this.getBillsList();
     });
   }
