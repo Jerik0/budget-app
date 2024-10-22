@@ -134,6 +134,7 @@ export class DashboardComponent implements OnInit {
   }
 
   onAddBill() {
+    this.editableId = undefined;
     let currentDate = this.date.toISOString();
     let bill = new Bill('test name', '$10.00', currentDate, true, Category.General);
 
