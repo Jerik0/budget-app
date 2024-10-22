@@ -149,18 +149,8 @@ export class DashboardComponent implements OnInit {
     let bill = new Bill('test name', '$10.00', currentDate, true, Category.General);
 
     this.billService.createBill(bill).subscribe(res => {
-      // copy data, update it, assign back to dataSource.data
-      let updatedData = this.dataSource.data;
-      updatedData.push(res);
-
-      this.dataSource.data = updatedData;
-
-      console.log(this.dataSource.data);
-
-      console.log('bill created:', res);
-
       this.updateBillFormGroup();
-      this.billForm.disable();
+      this.getBillsList();
     });
   }
 
@@ -183,11 +173,12 @@ export class DashboardComponent implements OnInit {
     console.log(this.billsArray);
 
     this.dataSource.data.forEach(bill => {
+      console.log(bill);
       this.addBillToFormGroup(bill);
     })
 
     // this.editableId = undefined;
-    console.log(this.billsArray);
+    console.log('billsArray after update: ', this.billsArray);
   }
 
   addBillToFormGroup(bill: any) {
@@ -200,8 +191,6 @@ export class DashboardComponent implements OnInit {
       category: new FormControl(bill.category, [Validators.required]),
     });
     billGroup.disable();
-    // this.editableId = undefined;
-    // this.toggleBillEnabled(billGroup);
     this.billsArray.push(billGroup);
   }
 
@@ -230,8 +219,8 @@ export class DashboardComponent implements OnInit {
 
   handleBillEdit(updatedBillForm: any, update: boolean, index: number) {
     console.log('=== handleBillEdit called ===')
-    console.log('first block passed: ', this.getEnabledBill() && this.editableId !== updatedBillForm.value.id);
-    console.log('second block passed:', !update);
+    console.log('is a bill enabled AND it isnt this bill?: ', this.getEnabledBill() && this.editableId !== updatedBillForm.value.id);
+    console.log('are updating:', !update);
     console.log('updatedBillForm.value.id:', updatedBillForm.value.id);
 
 
