@@ -1,16 +1,16 @@
 import db from '../../db/index.js';
 
-const create = async ({ name, amount, date, necessity, category }) => {
+const create = async ({ name, amount, date, necessity, category, chargeType }) => {
   const query = `
     INSERT INTO
-        bills (name, amount, date, necessity, category)
+        bills (name, amount, date, necessity, category, charge_type)
     VALUES
-        ($1, $2, $3, $4, $5)
+        ($1, $2, $3, $4, $5, $6)
     RETURNING *
   ;`
 
   try {
-    const result = await db.query(query, [name, amount, date, necessity, category]);
+    const result = await db.query(query, [name, amount, date, necessity, category, chargeType]);
     return result.rows[0];
   } catch (e) {
     console.log(e);
@@ -41,14 +41,19 @@ const findById = async (id) => {
 
   try {
     const result = await db.query(query, [+id]);
+
+    result.rows[0].chargeType = result.rows[0].charge_type;
+    delete result.rows[0].charge_type;
+
     console.log('result from repo: ', result.rows[0]);
+
     return result.rows[0];
   } catch (e) {
     console.log(e);
   }
 }
 
-const updateOne = async (id, { name, amount, date, necessity, category }) => {
+const updateOne = async (id, { name, amount, date, necessity, category, chargeType }) => {
   const query = `
     UPDATE
       bills
@@ -57,14 +62,14 @@ const updateOne = async (id, { name, amount, date, necessity, category }) => {
       amount = $3,
       date = $4,
       necessity = $5,
-      category = $6
-    WHERE
-      id = $1
+      category = $6,
+      charge_type = $7
+    WHERE id = $1
     RETURNING *
   ;`;
 
   try {
-    const result = await db.query(query, [+id, name, amount, date, necessity, category]);
+    const result = await db.query(query, [+id, name, amount, date, necessity, category, chargeType]);
     return result.rows[0];
   } catch (e) {
     console.log(e);

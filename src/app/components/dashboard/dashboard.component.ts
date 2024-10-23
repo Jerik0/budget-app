@@ -1,6 +1,6 @@
 import {Component, HostListener, inject, OnInit} from '@angular/core';
 import {BillService} from "../../services/bill.service";
-import {MatButton} from "@angular/material/button";
+import {MatButton, MatButtonModule} from "@angular/material/button";
 import {Bill} from "../../models/Bill";
 import Category from "../../enums/Category";
 import {
@@ -25,8 +25,8 @@ import {
   ReactiveFormsModule,
   Validators
 } from "@angular/forms";
-import {MatFormField} from "@angular/material/form-field";
-import {MatInput} from "@angular/material/input";
+import {MatFormField, MatFormFieldModule, MatHint, MatLabel, MatSuffix} from "@angular/material/form-field";
+import {MatInput, MatInputModule} from "@angular/material/input";
 import {KeyValuePipe, NgClass, NgForOf, NgIf, NgTemplateOutlet} from "@angular/common";
 import {MatIcon, MatIconModule} from "@angular/material/icon";
 import {MatOption, MatSelect} from "@angular/material/select";
@@ -35,10 +35,20 @@ import {MatMenu, MatMenuContent, MatMenuItem, MatMenuTrigger} from "@angular/mat
 import {SelectionModel} from "@angular/cdk/collections";
 import {MatCheckbox} from "@angular/material/checkbox";
 import {CreateBillDialogComponent} from "../dialogs/create-bill-dialog/create-bill-dialog.component";
+import category from "../../enums/Category";
+import ChargeType from "../../enums/ChargeType";
+import {
+  MatDatepicker,
+  MatDatepickerActions,
+  MatDatepickerApply,
+  MatDatepickerCancel, MatDatepickerInput, MatDatepickerModule, MatDatepickerToggle
+} from "@angular/material/datepicker";
+import {MatNativeDateModule, provideNativeDateAdapter} from "@angular/material/core";
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
+  providers: [provideNativeDateAdapter()],
   imports: [
     MatButton,
     MatTable,
@@ -63,7 +73,28 @@ import {CreateBillDialogComponent} from "../dialogs/create-bill-dialog/create-bi
     MatMenu,
     MatMenuTrigger,
     MatMenuContent,
-    MatCheckbox
+    MatCheckbox,
+    MatDatepicker,
+    MatDatepickerActions,
+    MatDatepickerApply,
+    MatDatepickerCancel,
+    MatDatepickerInput,
+    MatDatepickerToggle,
+    MatFormField,
+    MatHint,
+    MatInput,
+    MatLabel,
+    MatSuffix,
+    MatDatepicker,
+    MatDatepickerToggle,
+    MatDatepickerInput,
+    MatDatepickerModule,
+    MatNativeDateModule,
+    MatButton,
+    MatFormFieldModule,
+    MatInputModule,
+    MatDatepickerModule,
+    MatButtonModule
   ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss'
@@ -71,14 +102,17 @@ import {CreateBillDialogComponent} from "../dialogs/create-bill-dialog/create-bi
 export class DashboardComponent implements OnInit {
   protected readonly parseInt = parseInt;
   protected readonly category = Category;
+  protected readonly chargeType = ChargeType;
+  readonly dialog = inject(MatDialog);
+
   date = new Date();
   billsToDelete: number[] = [];
   editableId: number | undefined;
   dataSource = new MatTableDataSource<any>();
-  columnsToDisplay = ['select',  'name', 'amount', 'date', 'necessity', 'category'];
+  columnsToDisplay = ['select', 'name', 'amount', 'date', 'necessity', 'category', 'chargeType'];
   billForm: FormGroup;
   selection = new SelectionModel<any>(true, []);
-  readonly dialog = inject(MatDialog);
+
   get billsArray(): FormArray {
     return this.billForm.get('bills') as FormArray;
   }
@@ -167,7 +201,7 @@ export class DashboardComponent implements OnInit {
     });
 
     createBillDialog.afterClosed().subscribe((bill: Bill) => {
-      console.log(bill.date);
+      console.log(bill);
       if (this.billService.isValid(bill)) {
         this.onAddBill(bill);
       }
@@ -177,7 +211,8 @@ export class DashboardComponent implements OnInit {
   onAddBill(bill: Bill) {
     this.editableId = undefined;
 
-    this.billService.createBill(bill).subscribe(() => {
+    this.billService.createBill(bill).subscribe((res) => {
+      console.log(res);
       this.selection.clear();
       this.billsToDelete = [];
       this.getBillsList();
@@ -221,7 +256,7 @@ export class DashboardComponent implements OnInit {
     // @ts-ignore
     let updatedBill = billForm.value;
 
-    this.billService.getBillById(updatedBill.id).subscribe(originalBill => {
+    this.billService.getBillById(updatedBill.id).subscribe((originalBill: any) => {
       // compare incoming bill to the bill from the database
       if (JSON.stringify(originalBill) !== JSON.stringify(updatedBill)) {
         // update bill if they are not the same, and if user wants to update
@@ -266,6 +301,7 @@ export class DashboardComponent implements OnInit {
   }
 
   addBillToFormGroup(bill: any) {
+    console.log(bill);
     const billGroup = this.fb.group({
       id: new FormControl(bill.id, [Validators.required]),
       name: new FormControl(bill.name, [Validators.required]),
@@ -273,9 +309,12 @@ export class DashboardComponent implements OnInit {
       date: new FormControl(bill.date, [Validators.required]),
       necessity: new FormControl(bill.necessity, [Validators.required]),
       category: new FormControl(bill.category, [Validators.required]),
+      chargeType: new FormControl(bill.charge_type, [Validators.required]),
     });
     billGroup.disable();
     this.billsArray.push(billGroup);
+
+    console.log(this.billsArray);
   }
 
   resetBillFormValues(billForm?: any) {

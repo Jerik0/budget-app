@@ -37,6 +37,13 @@
       [(value)]="bill.category">
       <mat-option *ngFor="let category of category | keyvalue" [value]="category.value">{{ category.value }}</mat-option>
     </mat-select>
+
+    <mat-select
+      class="bill-field"
+      formControlName="chargeType"
+      [(value)]="bill.chargeType">
+      <mat-option *ngFor="let chargeType of chargeType | keyvalue" [value]="chargeType.value">{{ chargeType.value }}</mat-option>
+    </mat-select>
   </form>
 
   <div id="actions-container">

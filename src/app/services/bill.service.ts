@@ -40,7 +40,8 @@ export class BillService {
       bill.amount !== undefined && bill.amount.trim().length > 0 &&
       bill.date !== undefined &&
       bill.necessity !== undefined &&
-      bill.category !== undefined
+      bill.category !== undefined &&
+      bill.chargeType !== undefined
     );
   }
 }
