@@ -49,3 +49,5 @@ testem.log
 # System Files
 .DS_Store
 Thumbs.db
+/package-lock.json
+/.nx/cache/18.3.5-nx.win32-x64-msvc.node

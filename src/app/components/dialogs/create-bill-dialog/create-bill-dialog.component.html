@@ -1,0 +1,43 @@
+<p>create-bill-dialog works!</p>
+<form [formGroup]="billForm">
+  <mat-form-field>
+    <input matInput type="text" formControlName="name" placeholder="name">
+  </mat-form-field>
+
+  <mat-form-field>
+    <input matInput type="text" formControlName="amount" placeholder="amount">
+  </mat-form-field>
+
+  <mat-form-field class="example-form-field">
+    <mat-label>Choose a date</mat-label>
+    <input matInput [matDatepicker]="datepicker" formControlName="date" />
+    <mat-hint>MM/DD/YYYY</mat-hint>
+    <mat-datepicker-toggle matIconSuffix [for]="datepicker"></mat-datepicker-toggle>
+    <mat-datepicker #datepicker>
+      <mat-datepicker-actions>
+        <button mat-button matDatepickerCancel>Cancel</button>
+        <button mat-raised-button matDatepickerApply>Apply</button>
+      </mat-datepicker-actions>
+    </mat-datepicker>
+  </mat-form-field>
+
+  <mat-select
+    class="bill-field"
+    formControlName="necessity"
+    [(value)]="bill.necessity">
+    <mat-option [value]="'true'">true</mat-option>
+    <mat-option [value]="'false'">false</mat-option>
+  </mat-select>
+
+  <mat-select
+    class="bill-field"
+    formControlName="category"
+    [(value)]="bill.category">
+    <mat-option *ngFor="let category of category | keyvalue" [value]="category.value">{{ category.value }}</mat-option>
+  </mat-select>
+
+  <div id="actions-container">
+    <button class="btn" [mat-dialog-close]="bill">Create</button>
+    <button class="btn" [mat-dialog-close]="false">Cancel</button>
+  </div>
+</form>

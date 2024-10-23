@@ -1,6 +1,6 @@
 <div id="dashboard-wrapper">
   <div id="top-actions-container">
-    <button class="btn btn-primary" mat-flat-button (click)="onAddBill()">Create a Bill</button>
+    <button class="btn btn-primary" mat-flat-button (click)="openAddBillDialog()">Create a Bill</button>
     <button class="btn btn-danger" mat-flat-button (click)="deleteSelectedBills()">Delete Selected Bills</button>
   </div>
 
@@ -8,6 +8,25 @@
   <div id="bills-list-wrapper" class="mat-elevation-z2">
     <form [formGroup]="billForm">
       <table id="bills-table" mat-table [dataSource]="dataSource">
+
+        <!-- Checkbox Column -->
+        <ng-container matColumnDef="select">
+          <th mat-header-cell *matHeaderCellDef>
+            <mat-checkbox (change)="$event ? toggleAllRows() : null"
+                          [checked]="selection.hasValue() && isAllSelected()"
+                          [indeterminate]="selection.hasValue() && !isAllSelected()"
+                          [aria-label]="checkboxLabel()">
+            </mat-checkbox>
+          </th>
+          <td mat-cell *matCellDef="let row">
+            <mat-checkbox (click)="$event.stopPropagation()"
+                          (change)="$event ? onSelectBill(row) : null"
+                          [checked]="selection.isSelected(row)"
+                          [aria-label]="checkboxLabel(row)">
+            </mat-checkbox>
+          </td>
+        </ng-container>
+
         <ng-container matColumnDef="name">
           <th mat-header-cell *matHeaderCellDef> Name </th>
           <td mat-cell *matCellDef="let bill; let i = index;">
@@ -97,14 +116,14 @@
               <mat-icon
                 [ngClass]="getIcon('left', +bill.id)"
                 [fontIcon]="getIcon('left', +bill.id)"
-                (click)="handleBillEdit(billsArray.controls[i], true, i)">
+                (click)="handleBillEdit(billsArray.controls[i], true)">
               </mat-icon>
               <mat-icon
                 [matMenuTriggerFor]="editableId !== +bill.id ? confirmMenu : null"
                 [matMenuTriggerData]="{bill, i}"
                 [ngClass]="getIcon('right', +bill.id)"
                 [fontIcon]="getIcon('right', +bill.id)"
-                (click)="handleBillEdit(billsArray.controls[i], false, i)">
+                (click)="handleBillEdit(billsArray.controls[i], false)">
               </mat-icon>
             </div>
 
@@ -127,7 +146,7 @@
     <div>
       <span class="confirm-menu-text">Are you sure you want to delete <span id="confirm-menu-bill-name">{{bill.name}}</span>?</span>
       <button class="confirm-menu-btn" mat-button (click)="deleteSelectedBills(+bill.id)">Yes</button>
-      <button class="confirm-menu-btn" mat-button (click)="handleBillEdit(billsArray.controls[i], false, i)">No</button>
+      <button class="confirm-menu-btn" mat-button (click)="handleBillEdit(billsArray.controls[i], false)">No</button>
     </div>
   </ng-template>
 </mat-menu>
