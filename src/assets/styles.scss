@@ -13,20 +13,21 @@ html, body {
 }
 
 #application-wrapper {
+  background-color: $primary-background;
   padding: 24px;
   height: 100%;
 }
 
 :host ::ng-deep {
   --mat-form-field-container-height: 40px;
-  //--mdc-checkbox-selected-icon-color: $primary-danger;
-  //--mdc-checkbox-selected-focus-icon-color: $primary-danger;
-  //--mdc-slider-focus-handle-color: $primary-danger;
-  //--mdc-checkbox-selected-focus-state-layer-color: $primary-danger;
-  //
-  //--mdc-circular-progress-active-indicator-color: transparent;
-  //--mat-full-pseudo-checkbox-selected-icon-color: $primary-danger;
-  //--mdc-checkbox-selected-pressed-state-layer-color: $primary-danger;
+  --mdc-checkbox-selected-icon-color: #F68886;
+  --mdc-checkbox-selected-focus-icon-color: #F68886;
+  --mdc-slider-focus-handle-color: #F68886;
+  --mdc-checkbox-selected-focus-state-layer-color: #F68886;
+
+  --mdc-circular-progress-active-indicator-color: transparent;
+  --mat-full-pseudo-checkbox-selected-icon-color: #F68886;
+  --mdc-checkbox-selected-pressed-state-layer-color: #F68886;
 
   .mat-mdc-form-field-infix {
     display: flex;
@@ -109,18 +110,25 @@ html, body {
 
 // general button styling
 .btn {
-  border-radius: 5px;
+  border-radius: 3px;
+  font-weight: bold;
+
+  &:hover {
+    cursor: pointer;
+  }
 
   &:not(last-of-type) {
     margin-right: 4px;
   }
 
   &.btn-primary {
-    background-color: $honeydew;
+    background-color: $teal-dark;
+    color: #fff;
   }
 
   &.btn-danger {
     background-color: $primary-danger;
+    color: #fff;
   }
 }
 

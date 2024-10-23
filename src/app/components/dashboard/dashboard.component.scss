@@ -27,7 +27,7 @@
     }
 
     &.edit {
-      color: rgb(208, 255, 255);
+      color: $teal-light;
     }
 
     &.close {
@@ -74,7 +74,7 @@
     //width: 15% !important;
   }
   .mat-column-name {
-    width: 200px !important;
+    width: 150px !important;
   }
   //
   //.mat-column-amount {
@@ -125,7 +125,7 @@
     }
 
     & tr:hover .bill-hover-menu {
-      background-color: #2b2d42;
+      background-color: #292F36;
       color: #edf2f4;
       position: absolute;
       border-radius: 16px;
@@ -190,14 +190,14 @@
 
   .confirm-menu {
     .confirm-menu-text {
-      color: $primary-danger;
+      color: $primary-danger-light;
       margin-right: 5px;
     }
   }
 
   .mat-mdc-menu-panel.confirm-menu {
     padding: 0 10px;
-    background-color: rgba(43, 43, 44, 0.75) !important;
+    background-color: rgba(41, 47, 54, 0.75) !important;
     color: #e3e3e3 !important;
     max-width: unset !important;
 

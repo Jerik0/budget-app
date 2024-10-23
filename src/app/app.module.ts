@@ -14,6 +14,7 @@ import { AppComponent } from './app.component';
 import { MatCard } from "@angular/material/card";
 import { provideAnimations } from "@angular/platform-browser/animations";
 import { MatIconModule } from '@angular/material/icon';
+import {MatDatepickerModule} from "@angular/material/datepicker";
 
 // AoT requires an exported function for factories
 const httpLoaderFactory = (http: HttpClient): TranslateHttpLoader =>  new TranslateHttpLoader(http, './assets/i18n/', '.json');
@@ -39,7 +40,8 @@ const httpLoaderFactory = (http: HttpClient): TranslateHttpLoader =>  new Transl
     MatCard
   ],
   providers: [
-    provideAnimations()
+    provideAnimations(),
+    MatDatepickerModule
   ],
   bootstrap: [AppComponent]
 })

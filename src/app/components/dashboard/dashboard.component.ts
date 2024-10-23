@@ -34,6 +34,7 @@ import {MatDialog} from "@angular/material/dialog";
 import {MatMenu, MatMenuContent, MatMenuItem, MatMenuTrigger} from "@angular/material/menu";
 import {SelectionModel} from "@angular/cdk/collections";
 import {MatCheckbox} from "@angular/material/checkbox";
+import {CreateBillDialogComponent} from "../dialogs/create-bill-dialog/create-bill-dialog.component";
 
 @Component({
   selector: 'app-dashboard',
@@ -83,6 +84,9 @@ export class DashboardComponent implements OnInit {
   billForm: FormGroup;
   selection = new SelectionModel<any>(true, []);
   readonly dialog = inject(MatDialog);
+  get billsArray(): FormArray {
+    return this.billForm.get('bills') as FormArray;
+  }
 
   constructor(private billService: BillService, public fb: FormBuilder) {
     this.billForm = this.fb.group({
@@ -95,66 +99,6 @@ export class DashboardComponent implements OnInit {
     this.getBillsList();
   }
 
-  @HostListener('window:keydown', ['$event'])
-  onKeyDown(event: KeyboardEvent) {
-
-    if (event.key === 'Escape') {
-      if (this.editableId !== undefined) {
-        // this.getEnabledBill();
-        this.resetBillFormValues();
-        this.toggleBillEnabled(this.getEnabledBill());
-      }
-    }
-
-    if (event.key === 'Enter') {
-      if (this.editableId !== undefined) {
-        this.handleBillEdit(this.getEnabledBill(), true);
-      }
-    }
-
-  }
-
-  getEnabledBill() {
-    let activeBill;
-    this.billsArray.controls.map((a: any, index) => {
-      if (a.enabled) {
-        activeBill = a;
-      }
-    });
-
-    return activeBill;
-  }
-
-  toggleBillEnabled(billForm: any) {
-    if (this.editableId === billForm.value.id) {
-      this.editableId = undefined;
-    } else {
-      this.editableId = billForm.value.id;
-    }
-
-    if (billForm.enabled) {
-      billForm.disable();
-    } else {
-      billForm.enable();
-    }
-  }
-
-  get billsArray(): FormArray {
-    return this.billForm.get('bills') as FormArray;
-  }
-
-  onAddBill() {
-    this.editableId = undefined;
-    let currentDate = this.date.toISOString();
-    let bill = new Bill('test name', '$10.00', currentDate, true, Category.General);
-
-    this.billService.createBill(bill).subscribe(res => {
-      this.selection.clear();
-      this.billsToDelete = [];
-      this.getBillsList();
-    });
-  }
-
   getBillsList() {
     this.billService.getAllBills().subscribe(res => {
       // @ts-ignore
@@ -163,27 +107,7 @@ export class DashboardComponent implements OnInit {
     })
   }
 
-  updateBillFormGroup() {
-    this.billsArray.clear();
-
-    this.dataSource.data.forEach(bill => {
-      this.addBillToFormGroup(bill);
-    })
-  }
-
-  addBillToFormGroup(bill: any) {
-    const billGroup = this.fb.group({
-      id: new FormControl(bill.id, [Validators.required]),
-      name: new FormControl(bill.name, [Validators.required]),
-      amount: new FormControl(bill.amount, [Validators.required]),
-      date: new FormControl(bill.date, [Validators.required]),
-      necessity: new FormControl(bill.necessity, [Validators.required]),
-      category: new FormControl(bill.category, [Validators.required]),
-    });
-    billGroup.disable();
-    this.billsArray.push(billGroup);
-  }
-
+  // ===== SELECTION LOGIC =====
   onSelectBill(row: any) {
     this.selection.toggle(row);
     let arrayToFilter = this.billsToDelete;
@@ -240,6 +164,32 @@ export class DashboardComponent implements OnInit {
     }
   }
 
+  // ===== ADD / UPDATE LOGIC =====
+  openAddBillDialog() {
+    let createBillDialog = this.dialog.open(CreateBillDialogComponent, {
+      height: '200px',
+      width: '900px'
+    });
+
+    createBillDialog.afterClosed().subscribe(res => {
+      if (res !== false) {
+        this.onAddBill(res);
+      }
+    })
+  }
+
+  onAddBill(bill: Bill) {
+    this.editableId = undefined;
+
+    // let bill = new Bill('test name', '$10.00', currentDate, true, Category.General);
+
+    this.billService.createBill(bill).subscribe(res => {
+      this.selection.clear();
+      this.billsToDelete = [];
+      this.getBillsList();
+    });
+  }
+
   handleBillEdit(updatedBillForm: any, update: boolean) {
     console.log('=== handleBillEdit called ===')
     console.log('is a bill enabled AND it isnt this bill?: ', this.getEnabledBill() && this.editableId !== updatedBillForm.value.id);
@@ -284,13 +234,54 @@ export class DashboardComponent implements OnInit {
         this.billService.updateBill(updatedBill).subscribe(() => {
           console.log('bill updated with new values:', updatedBill);
           this.getBillsList();
-
-          // this.resetBillFormValues();
           billForm.disable();
           this.editableId = undefined;
+          this.billsToDelete = [];
+          this.selection.clear();
         })
       }
     });
+  }
+
+  // ===== HELPER FUNCTIONS =====
+  @HostListener('window:keydown', ['$event'])
+  onKeyDown(event: KeyboardEvent) {
+
+    if (event.key === 'Escape') {
+      if (this.editableId !== undefined) {
+        // this.getEnabledBill();
+        this.resetBillFormValues();
+        this.toggleBillEnabled(this.getEnabledBill());
+      }
+    }
+
+    if (event.key === 'Enter') {
+      if (this.editableId !== undefined) {
+        this.handleBillEdit(this.getEnabledBill(), true);
+      }
+    }
+
+  }
+
+  updateBillFormGroup() {
+    this.billsArray.clear();
+
+    this.dataSource.data.forEach(bill => {
+      this.addBillToFormGroup(bill);
+    })
+  }
+
+  addBillToFormGroup(bill: any) {
+    const billGroup = this.fb.group({
+      id: new FormControl(bill.id, [Validators.required]),
+      name: new FormControl(bill.name, [Validators.required]),
+      amount: new FormControl(bill.amount, [Validators.required]),
+      date: new FormControl(bill.date, [Validators.required]),
+      necessity: new FormControl(bill.necessity, [Validators.required]),
+      category: new FormControl(bill.category, [Validators.required]),
+    });
+    billGroup.disable();
+    this.billsArray.push(billGroup);
   }
 
   resetBillFormValues(billForm?: any) {
@@ -302,6 +293,31 @@ export class DashboardComponent implements OnInit {
       // @ts-ignore
       return billForm.patchValue(bill);
     })
+  }
+
+  getEnabledBill() {
+    let activeBill;
+    this.billsArray.controls.map((a: any, index) => {
+      if (a.enabled) {
+        activeBill = a;
+      }
+    });
+
+    return activeBill;
+  }
+
+  toggleBillEnabled(billForm: any) {
+    if (this.editableId === billForm.value.id) {
+      this.editableId = undefined;
+    } else {
+      this.editableId = billForm.value.id;
+    }
+
+    if (billForm.enabled) {
+      billForm.disable();
+    } else {
+      billForm.enable();
+    }
   }
 
   isDisabled(id: number): boolean {
@@ -327,9 +343,4 @@ export class DashboardComponent implements OnInit {
     }
     return icon;
   }
-
-  seeFormGroup() {
-    console.log(this.billForm);
-  }
-
 }
