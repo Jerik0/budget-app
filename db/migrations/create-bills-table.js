@@ -6,7 +6,8 @@ const createBillsTable = `
     date DATE NOT NULL,
     necessity VARCHAR(255) NOT NULL,
     category VARCHAR(255) NOT NULL,
-    charge_type VARCHAR(255) NOT NULL
+    charge_type VARCHAR(255) NOT NULL,
+    frequency VARCHAR(255) NOT NULL
   );
 `;
 
