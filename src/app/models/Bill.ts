@@ -8,7 +8,9 @@ export class Bill {
   public necessity?: boolean;
   public category?: Category;
 
-  constructor(name: string, amount: string, date: string, necessity: boolean, category?: Category) {
+  constructor();
+  constructor(name: string, amount: string, date: string, necessity: boolean, category: Category);
+  constructor(name?: string, amount?: string, date?: string, necessity?: boolean, category?: Category) {
     this.name = name;
     this.amount = amount;
     this.date = date;
