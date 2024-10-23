@@ -33,4 +33,14 @@ export class BillService {
       params: { ids: ids.join(',') }
     });
   }
+
+   isValid(bill: Bill): boolean {
+    return (
+      bill.name !== undefined && bill.name.trim().length > 0 &&
+      bill.amount !== undefined && bill.amount.trim().length > 0 &&
+      bill.date !== undefined &&
+      bill.necessity !== undefined &&
+      bill.category !== undefined
+    );
+  }
 }

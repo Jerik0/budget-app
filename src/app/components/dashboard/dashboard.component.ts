@@ -52,8 +52,6 @@ import {CreateBillDialogComponent} from "../dialogs/create-bill-dialog/create-bi
     MatRow,
     MatRowDef,
     ReactiveFormsModule,
-    MatFormField,
-    MatInput,
     NgClass,
     MatIcon,
     MatIconModule,
@@ -63,11 +61,8 @@ import {CreateBillDialogComponent} from "../dialogs/create-bill-dialog/create-bi
     MatOption,
     FormsModule,
     MatMenu,
-    NgIf,
     MatMenuTrigger,
     MatMenuContent,
-    MatMenuItem,
-    NgTemplateOutlet,
     MatCheckbox
   ],
   templateUrl: './dashboard.component.html',
@@ -167,13 +162,14 @@ export class DashboardComponent implements OnInit {
   // ===== ADD / UPDATE LOGIC =====
   openAddBillDialog() {
     let createBillDialog = this.dialog.open(CreateBillDialogComponent, {
-      height: '200px',
+      height: '300px',
       width: '900px'
     });
 
-    createBillDialog.afterClosed().subscribe(res => {
-      if (res !== false) {
-        this.onAddBill(res);
+    createBillDialog.afterClosed().subscribe((bill: Bill) => {
+      console.log(bill.date);
+      if (this.billService.isValid(bill)) {
+        this.onAddBill(bill);
       }
     })
   }
@@ -181,9 +177,7 @@ export class DashboardComponent implements OnInit {
   onAddBill(bill: Bill) {
     this.editableId = undefined;
 
-    // let bill = new Bill('test name', '$10.00', currentDate, true, Category.General);
-
-    this.billService.createBill(bill).subscribe(res => {
+    this.billService.createBill(bill).subscribe(() => {
       this.selection.clear();
       this.billsToDelete = [];
       this.getBillsList();

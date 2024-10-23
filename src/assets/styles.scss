@@ -29,6 +29,10 @@ html, body {
   --mat-full-pseudo-checkbox-selected-icon-color: #F68886;
   --mdc-checkbox-selected-pressed-state-layer-color: #F68886;
 
+  .mat-mdc-button-touch-target {
+    height: unset;
+  }
+
   .mat-mdc-form-field-infix {
     display: flex;
     padding: 0 !important;

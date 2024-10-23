@@ -1,0 +1,23 @@
+@use './assets/styles';
+
+#create-bill-wrapper {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+
+  h2 {
+    margin: 0;
+    padding: 30px;
+    font-weight: normal;
+  }
+}
+
+#actions-container {
+  display: flex;
+  justify-content: flex-end;
+  margin: auto 10px 10px 10px;
+}
+
+.mat-mdc-select.bill-field {
+  width: 200px;
+}

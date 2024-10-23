@@ -50,7 +50,7 @@ import {MatFormFieldModule} from "@angular/material/form-field";
 export class CreateBillDialogComponent implements OnInit {
   readonly dialog = inject(MatDialog);
   protected readonly category = category;
-  bill = new Bill('', '', '', false, Category.General);
+  bill = new Bill();
   billForm = new FormGroup(
     {
       name: new FormControl(this.bill.name, [Validators.required]),
