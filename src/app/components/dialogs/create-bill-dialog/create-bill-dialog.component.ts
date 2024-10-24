@@ -19,6 +19,7 @@ import {MatButton, MatButtonModule} from "@angular/material/button";
 import {provideNativeDateAdapter} from '@angular/material/core';
 import {MatFormFieldModule} from "@angular/material/form-field";
 import ChargeType from "../../../enums/ChargeType";
+import {Frequency} from "../../../enums/Frequency";
 
 @Component({
   selector: 'app-create-bill-dialog',
@@ -50,6 +51,7 @@ import ChargeType from "../../../enums/ChargeType";
 })
 export class CreateBillDialogComponent implements OnInit {
   protected readonly chargeType = ChargeType;
+  protected readonly frequency = Frequency;
   protected readonly category = category;
   readonly dialog = inject(MatDialog);
   bill = new Bill();
@@ -61,6 +63,7 @@ export class CreateBillDialogComponent implements OnInit {
       necessity: new FormControl(this.bill.necessity, [Validators.required]),
       category: new FormControl(this.bill.category, [Validators.required]),
       chargeType: new FormControl(this.bill.chargeType, [Validators.required]),
+      frequency: new FormControl(this.bill.frequency, [Validators.required])
     }
   )
 

@@ -24,6 +24,14 @@
 
     <mat-select
       class="bill-field"
+      formControlName="frequency"
+      placeholder="frequency"
+      [(value)]="bill.frequency">
+      <mat-option *ngFor="let frequency of frequency | keyvalue" [value]="frequency.value">{{ frequency.value }}</mat-option>
+    </mat-select>
+
+    <mat-select
+      class="bill-field"
       formControlName="necessity"
       placeholder="necessity"
       [(value)]="bill.necessity">
@@ -34,6 +42,7 @@
     <mat-select
       class="bill-field"
       formControlName="category"
+      placeholder="category"
       [(value)]="bill.category">
       <mat-option *ngFor="let category of category | keyvalue" [value]="category.value">{{ category.value }}</mat-option>
     </mat-select>
@@ -41,6 +50,7 @@
     <mat-select
       class="bill-field"
       formControlName="chargeType"
+      placeholder="charge type"
       [(value)]="bill.chargeType">
       <mat-option *ngFor="let chargeType of chargeType | keyvalue" [value]="chargeType.value">{{ chargeType.value }}</mat-option>
     </mat-select>

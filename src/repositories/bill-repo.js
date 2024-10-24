@@ -1,16 +1,16 @@
 import db from '../../db/index.js';
 
-const create = async ({ name, amount, date, necessity, category, chargeType }) => {
+const create = async ({ name, amount, date, necessity, category, chargeType, frequency }) => {
   const query = `
     INSERT INTO
-        bills (name, amount, date, necessity, category, charge_type)
+        bills (name, amount, date, necessity, category, charge_type, frequency)
     VALUES
-        ($1, $2, $3, $4, $5, $6)
+        ($1, $2, $3, $4, $5, $6, $7)
     RETURNING *
   ;`
 
   try {
-    const result = await db.query(query, [name, amount, date, necessity, category, chargeType]);
+    const result = await db.query(query, [name, amount, date, necessity, category, chargeType, frequency]);
     return result.rows[0];
   } catch (e) {
     console.log(e);
@@ -42,6 +42,7 @@ const findById = async (id) => {
   try {
     const result = await db.query(query, [+id]);
 
+    // transform data from database to be consistent with expected data chargeType in front end.
     result.rows[0].chargeType = result.rows[0].charge_type;
     delete result.rows[0].charge_type;
 
@@ -53,7 +54,7 @@ const findById = async (id) => {
   }
 }
 
-const updateOne = async (id, { name, amount, date, necessity, category, chargeType }) => {
+const updateOne = async (id, { name, amount, date, necessity, category, chargeType, frequency }) => {
   const query = `
     UPDATE
       bills
@@ -63,13 +64,14 @@ const updateOne = async (id, { name, amount, date, necessity, category, chargeTy
       date = $4,
       necessity = $5,
       category = $6,
-      charge_type = $7
+      charge_type = $7,
+      frequency = $8
     WHERE id = $1
     RETURNING *
   ;`;
 
   try {
-    const result = await db.query(query, [+id, name, amount, date, necessity, category, chargeType]);
+    const result = await db.query(query, [+id, name, amount, date, necessity, category, chargeType, frequency]);
     return result.rows[0];
   } catch (e) {
     console.log(e);

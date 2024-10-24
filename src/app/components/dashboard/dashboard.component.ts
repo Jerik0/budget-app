@@ -44,6 +44,7 @@ import {
   MatDatepickerCancel, MatDatepickerInput, MatDatepickerModule, MatDatepickerToggle
 } from "@angular/material/datepicker";
 import {MatNativeDateModule, provideNativeDateAdapter} from "@angular/material/core";
+import {Frequency} from "../../enums/Frequency";
 
 @Component({
   selector: 'app-dashboard',
@@ -102,6 +103,7 @@ import {MatNativeDateModule, provideNativeDateAdapter} from "@angular/material/c
 export class DashboardComponent implements OnInit {
   protected readonly parseInt = parseInt;
   protected readonly category = Category;
+  protected readonly frequency = Frequency;
   protected readonly chargeType = ChargeType;
   readonly dialog = inject(MatDialog);
 
@@ -109,7 +111,7 @@ export class DashboardComponent implements OnInit {
   billsToDelete: number[] = [];
   editableId: number | undefined;
   dataSource = new MatTableDataSource<any>();
-  columnsToDisplay = ['select', 'name', 'amount', 'date', 'necessity', 'category', 'chargeType'];
+  columnsToDisplay = ['select', 'name', 'amount', 'date', 'frequency', 'necessity', 'category', 'chargeType'];
   billForm: FormGroup;
   selection = new SelectionModel<any>(true, []);
 
@@ -201,7 +203,7 @@ export class DashboardComponent implements OnInit {
     });
 
     createBillDialog.afterClosed().subscribe((bill: Bill) => {
-      console.log(bill);
+      // console.log(bill);
       if (this.billService.isValid(bill)) {
         this.onAddBill(bill);
       }
@@ -220,12 +222,6 @@ export class DashboardComponent implements OnInit {
   }
 
   handleBillEdit(updatedBillForm: any, update: boolean) {
-    console.log('=== handleBillEdit called ===')
-    console.log('is a bill enabled AND it isnt this bill?: ', this.getEnabledBill() && this.editableId !== updatedBillForm.value.id);
-    console.log('are updating:', !update);
-    console.log('updatedBillForm.value.id:', updatedBillForm.value.id);
-
-
     // reset previously enabled row if it's not the current one.
     if (this.getEnabledBill() && this.editableId !== updatedBillForm.value.id) {
       this.editableId = undefined;
@@ -257,6 +253,9 @@ export class DashboardComponent implements OnInit {
     let updatedBill = billForm.value;
 
     this.billService.getBillById(updatedBill.id).subscribe((originalBill: any) => {
+      // console.log(JSON.stringify(originalBill));
+      // console.log(JSON.stringify(updatedBill));
+
       // compare incoming bill to the bill from the database
       if (JSON.stringify(originalBill) !== JSON.stringify(updatedBill)) {
         // update bill if they are not the same, and if user wants to update
@@ -309,7 +308,8 @@ export class DashboardComponent implements OnInit {
       date: new FormControl(bill.date, [Validators.required]),
       necessity: new FormControl(bill.necessity, [Validators.required]),
       category: new FormControl(bill.category, [Validators.required]),
-      chargeType: new FormControl(bill.charge_type, [Validators.required]),
+      frequency: new FormControl(bill.frequency, [Validators.required]),
+      chargeType: new FormControl(bill.charge_type, [Validators.required])
     });
     billGroup.disable();
     this.billsArray.push(billGroup);
