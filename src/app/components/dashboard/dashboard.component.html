@@ -1,1 +1,8 @@
-<button class="btn btn-primary" mat-flat-button routerLink="/bill-management" >Bill Management</button>
+<div id="dashboard-wrapper">
+  <div id="top-controls">
+    <button class="btn btn-primary" mat-flat-button routerLink="/bill-management" >Bill Management</button>
+    <button class="btn btn-primary" mat-flat-button routerLink="/graph-widget" >Graph Widget</button>
+  </div>
+
+  <canvas #graph id="graph" [height]="graphHeight" [width]="graphWidth"></canvas>
+</div>

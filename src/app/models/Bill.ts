@@ -4,7 +4,7 @@ import {Frequency} from "../enums/Frequency";
 
 export class Bill {
   public name?: string;
-  public amount?: string;
+  public amount?: number;
   public date?: Date;
   public necessity?: boolean;
   public category?: Category;
@@ -12,8 +12,8 @@ export class Bill {
   public frequency?: Frequency;
 
   constructor();
-  constructor(name: string, amount: string, date: Date, necessity: boolean, category: Category, chargeType: ChargeType, frequency: Frequency);
-  constructor(name?: string, amount?: string, date?: Date, necessity?: boolean, category?: Category, chargeType?: ChargeType, frequency?: Frequency) {
+  constructor(name: string, amount: number, date: Date, necessity: boolean, category: Category, chargeType: ChargeType, frequency: Frequency);
+  constructor(name?: string, amount?: number, date?: Date, necessity?: boolean, category?: Category, chargeType?: ChargeType, frequency?: Frequency) {
     this.name = name;
     this.amount = amount;
     this.date = date;

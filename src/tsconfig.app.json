@@ -1,6 +1,7 @@
 {
   "extends": "../tsconfig.json",
   "compilerOptions": {
+    "strictPropertyInitialization": false,
     "outDir": "../out-tsc/app",
     "baseUrl": "",
     "types": [
@@ -16,5 +17,5 @@
   ],
   "exclude": [
     "**/*.spec.ts"
-  ]
+  ],
 }
