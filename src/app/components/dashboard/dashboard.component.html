@@ -2,7 +2,13 @@
   <div id="top-controls">
     <button class="btn btn-primary" mat-flat-button routerLink="/bill-management" >Bill Management</button>
     <button class="btn btn-primary" mat-flat-button routerLink="/graph-widget" >Graph Widget</button>
+    <mat-radio-group>
+      <mat-radio-button value="basic" (click)="mapData()">Basic</mat-radio-button>
+      <mat-radio-button value="advanced" (click)="mapAdvancedData()">Advanced</mat-radio-button>
+    </mat-radio-group>
   </div>
-
+  @for (bill of bills; track bill.name) {
+<!--    {{bill.date.slice(0, 10)}}-->
+  }
   <canvas #graph id="graph" [height]="graphHeight" [width]="graphWidth"></canvas>
 </div>

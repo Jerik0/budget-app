@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from "@angular/common/http";
-import { Observable } from "rxjs";
+import {map, Observable} from "rxjs";
 import { Bill } from "../models/Bill";
 
 @Injectable({
@@ -16,7 +16,16 @@ export class BillService {
   }
 
   getAllBills() {
-    return this.http.get('http://localhost:3000/bills');
+    return this.http.get('http://localhost:3000/bills').pipe();
+  }
+
+  getAllBillsWithFormattedDate() {
+    return this.http.get('http://localhost:3000/bills').pipe(
+      map((res: Bill) => {
+
+        return res;
+      })
+    );
   }
 
   getBillById(id: number) {
