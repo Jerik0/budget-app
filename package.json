@@ -59,6 +59,7 @@
     "@angular/platform-browser": "17.3.6",
     "@angular/platform-browser-dynamic": "17.3.6",
     "@angular/router": "17.3.6",
+    "chart.js": "4.4.5",
     "dotenv": "16.4.5",
     "express": "4.21.1",
     "material-icons": "1.13.12",

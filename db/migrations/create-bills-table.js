@@ -2,7 +2,7 @@ const createBillsTable = `
   CREATE TABLE IF NOT EXISTS bills (
     id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
-    amount VARCHAR(255) NOT NULL,
+    amount INTEGER NOT NULL,
     date DATE NOT NULL,
     necessity VARCHAR(255) NOT NULL,
     category VARCHAR(255) NOT NULL,

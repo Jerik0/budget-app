@@ -1,6 +1,6 @@
 enum ChargeType {
-  Debit = 'debit',
-  Credit = 'credit',
+  Expense = 'expense',
+  Income = 'income',
 }
 
 export default ChargeType;

@@ -1,0 +1,306 @@
+@import './assets/styles.scss';
+
+#bill-management-wrapper {
+  height: 100%;
+}
+
+#bills-list-wrapper {
+  overflow: auto;
+  height: 524px;
+}
+
+#top-actions-container {
+  margin-bottom: 10px;
+  display: flex;
+}
+
+.bill-hover-menu {
+  display: none;
+
+  mat-icon:hover {
+    font-size: 1.8em;
+    cursor: pointer;
+
+    &.check {
+      color: $primary-confirm;
+    }
+
+    &.edit {
+      color: $teal-light;
+    }
+
+    &.close {
+      color: $primary-danger;
+    }
+
+    &.delete {
+      color: $primary-danger;
+    }
+  }
+
+  & mat-icon:first-of-type {
+    margin-right: 6px;
+  }
+}
+
+mat-select.bill-field {
+  border: 1px solid transparent;
+  &:not(.mat-mdc-select-disabled) {
+    box-shadow: 0 2px 1px -1px rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 1px 3px 0px rgba(0, 0, 0, 0.12);
+    background-color: #fefefe;
+
+    &:hover {
+      background-color: #fff;
+    }
+  }
+}
+
+
+.bill-field {
+  border-radius: 5px;
+  padding: 2px 4px;
+  &.disabled {
+    background: none;
+    border: 1px solid transparent;
+  }
+
+
+
+  // fields that are enabled
+  &:not(.disabled, .mat-mdc-select) {
+    border: 1px solid rgba(0, 0, 0, 0.08);
+    box-shadow: inset 3px 3px 6px 1px rgb(0 0 0 / 20%);
+    //font-style: italic;
+
+    &:focus-visible {
+      outline-color: $primary-warn;
+    }
+  }
+}
+
+// any angular material components go here
+:host ::ng-deep {
+  .mat-mdc-header-cell:not(:last-of-type, :first-of-type) {
+    //padding: 0;
+    padding-left: 20px;
+
+    &:nth-of-type(2) {
+      padding-left: 5px;
+      padding-right: 20px;
+    }
+  }
+
+  .mdc-data-table__cell.cdk-cell:not(:last-of-type, :first-of-type) {
+    //padding: 0;
+
+    &:nth-of-type(2) {
+      padding-left: 5px;
+      padding-right: 20px;
+    }
+  }
+
+  .mat-mdc-cell {
+    //width: 15% !important;
+  }
+
+  .mat-mdc-form-field-flex {
+    height: 100% !important;
+  }
+
+  .mdc-notched-outline {
+    height: 100% !important;
+  }
+
+  .mat-mdc-text-field-wrapper {
+    height: 100% !important;
+  }
+
+  #bills-table {
+    & .mat-column-select {
+      //width: 50px !important;
+    }
+
+    & .mat-column-name {
+      min-width: fit-content;
+      max-width: fit-content;
+
+      & input {
+        width: 100%;
+      }
+    }
+
+    .mat-column-amount {
+      //padding: 0 !important;
+      min-width: fit-content;
+      max-width: fit-content;
+
+      & input {
+        width: 80px;
+      }
+    }
+
+    & .mat-column-date {
+      width: fit-content;
+      max-width: min-content;
+    }
+
+    // ===== TABLE DATA CELL BEHAVIOR =====
+    td.mat-mdc-cell {
+      position: relative;
+      overflow: visible;
+      border: 1px solid transparent;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+
+      // if the cells aren't disabled
+      &:not(:has(.disabled)) {
+        border-bottom: 1px solid $primary-blue;
+        border-top: 1px solid $primary-blue;
+
+        .mat-datepicker-toggle-default-icon {
+          color: $primary-blue;
+        }
+
+        // left-most cell
+        &:first-child {
+          border-left: 1px solid $primary-blue;
+        }
+
+        // right-most cell
+        &:last-child {
+          border-right: 1px solid $primary-blue;
+        }
+      }
+    }
+
+    & tr.mat-mdc-row {
+      height: 48px !important;
+    }
+
+    & tr:hover {
+      background-color: $primary-ghost;
+      box-shadow: 0 2px 1px -1px rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 1px 3px 0px rgba(0, 0, 0, 0.12);
+    }
+
+    & tr:hover .bill-hover-menu {
+      background-color: #292F36;
+      color: #edf2f4;
+      position: absolute;
+      border-radius: 16px;
+      top: -20px;
+      right: 32px;
+      display: flex;
+      text-align: center;
+      padding: 4px 8px;
+      z-index: 101;
+    }
+
+    #date-container {
+      display: flex;
+      flex-basis: fit-content;
+      width: fit-content;
+      //min-width: 100px;
+      //max-width: 200px;
+
+      #date-left-container {
+        display: flex;
+        align-items: center;
+        & input {
+          -webkit-user-select: none;
+          -moz-user-select: none;
+          -ms-user-select: none;
+          user-select: none;
+          height: fit-content;
+          width: 80px;
+          border: none;
+          background: none;
+
+          &:hover {
+            cursor: unset;
+          }
+
+          &:not(.disabled) {
+            &:focus-visible {
+              outline: none;
+            }
+          }
+        }
+      }
+
+      #date-right-container {
+        width: 50%;
+      }
+    }
+  }
+
+  // ======== SCROLL BAR ========
+  #bills-list-wrapper::-webkit-scrollbar {
+    width: .5em;
+    border-radius: 10px;
+    margin-left: 5px;
+  }
+
+  #bills-list-wrapper::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+  }
+
+  #bills-list-wrapper::-webkit-scrollbar-thumb {
+    background-color: #2b2d42;
+    border-radius: 10px;
+    //outline: 1px solid slategrey;
+  }
+}
+
+#confirm-menu-bill-name {
+  background-color: #f5f5f5;
+  padding: 5px;
+  margin: 0 5px;
+  border-radius: 5px;
+  color: $primary-dark;
+  font-weight: bold;
+}
+
+.confirm-menu-btn.mdc-button  {
+  color: #fff !important;
+  border-radius: 50%;
+  padding: 0;
+  min-width: 36px;
+  min-height: 36px;
+
+  &:first-of-type:hover {
+    background-color: $primary-danger;
+  }
+
+  &:hover {
+    color: rgba(255, 255, 255, 0.7);
+    background-color: rgba(199, 199, 199, 0.7);
+  }
+}
+
+// targeting the overlay elements which can only be done using ::ng-deep with no :host prefix.
+::ng-deep {
+
+  .cdk-overlay-connected-position-bounding-box:has(.mat-mdc-menu-panel.confirm-menu) {
+    transform: translate(22px, 15px);
+  }
+
+  .confirm-menu {
+    .confirm-menu-text {
+      color: $primary-danger-light;
+      margin-right: 5px;
+    }
+  }
+
+  .mat-mdc-menu-panel.confirm-menu {
+    padding: 0 10px;
+    background-color: rgba(41, 47, 54, 0.75) !important;
+    color: #e3e3e3 !important;
+    max-width: unset !important;
+
+    & .mat-mdc-menu-content {
+      padding: 6px !important;
+    }
+  }
+}
+
+

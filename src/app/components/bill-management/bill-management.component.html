@@ -1,0 +1,213 @@
+<div id="bill-management-wrapper">
+  <div id="top-actions-container">
+    <div>
+      <button class="btn btn-primary" mat-flat-button (click)="openAddBillDialog()">Create a Bill</button>
+      <button class="btn btn-danger" mat-flat-button (click)="deleteSelectedBills()">Delete Selected Bills</button>
+    </div>
+    <div>
+      <button class="btn btn-primary" mat-flat-button routerLink="/dashboard">Dashboard</button>
+    </div>
+  </div>
+
+  <div id="bills-list-wrapper" class="mat-elevation-z2">
+    <form [formGroup]="billForm">
+      <table id="bills-table" mat-table [dataSource]="dataSource">
+
+        <!-- Checkbox Column -->
+        <ng-container matColumnDef="select">
+          <th mat-header-cell *matHeaderCellDef>
+            <mat-checkbox (change)="$event ? toggleAllRows() : null"
+                          [checked]="selection.hasValue() && isAllSelected()"
+                          [indeterminate]="selection.hasValue() && !isAllSelected()"
+                          [aria-label]="checkboxLabel()">
+            </mat-checkbox>
+          </th>
+          <td mat-cell *matCellDef="let row; let i = index">
+            <div formArrayName="bills">
+              <div [formGroupName]="i">
+                <mat-checkbox (click)="$event.stopPropagation()"
+                              (change)="$event ? onSelectBill(row) : null"
+                              [checked]="selection.isSelected(row)"
+                              [ngClass]="{disabled: isDisabled(+row.id), first: i === 0}"
+                              [aria-label]="checkboxLabel(row)">
+                </mat-checkbox>
+              </div>
+            </div>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef> Name </th>
+          <td mat-cell *matCellDef="let bill; let i = index;">
+
+            <div formArrayName="bills">
+              <div [formGroupName]="i">
+                <input formControlName="name"
+                       class="bill-field"
+                       [ngClass]="{disabled: isDisabled(+bill.id), first: i === 0}"
+                       type="text"
+                       [value]="bill.name">
+              </div>
+            </div>
+
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="amount">
+          <th mat-header-cell *matHeaderCellDef> Amount </th>
+          <td mat-cell *matCellDef="let bill; let i = index;">
+            <div formArrayName="bills">
+              <div [formGroupName]="i">
+                <input formControlName="amount"
+                       class="bill-field"
+                       [ngClass]="{disabled: isDisabled(+bill.id), first: i === 0}"
+                       type="text"
+                       [value]="bill.amount">
+              </div>
+            </div>
+
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="date">
+          <th mat-header-cell *matHeaderCellDef> Starting Date </th>
+          <td mat-cell *matCellDef="let bill; let i = index;">
+
+            <div formArrayName="bills">
+              <div id="date-container" [formGroupName]="i">
+                <div id="date-left-container">
+                  <input formControlName="date"
+                         matInput
+                         readonly
+                         [ngClass]="{disabled: isDisabled(+bill.id), first: i === 0}"
+                         [matDatepicker]="datepicker"
+                         type="text"
+                         [value]="bill.date">
+                  <mat-datepicker-toggle matIconSuffix [for]="datepicker"></mat-datepicker-toggle>
+                </div>
+
+                <div id="date-right-container">
+                  <mat-datepicker #datepicker [disabled]="isDisabled(+bill.id)">
+                    <mat-datepicker-actions>
+                      <button mat-button matDatepickerCancel>Cancel</button>
+                      <button mat-raised-button matDatepickerApply>Apply</button>
+                    </mat-datepicker-actions>
+                  </mat-datepicker>
+                </div>
+              </div>
+            </div>
+
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="frequency">
+          <th mat-header-cell *matHeaderCellDef> Frequency </th>
+          <td mat-cell *matCellDef="let bill; let i = index;">
+
+            <div formArrayName="bills">
+              <div [formGroupName]="i">
+                <mat-select
+                  class="bill-field"
+                  formControlName="frequency"
+                  [ngClass]="{disabled: isDisabled(+bill.id), first: i === 0}"
+                  [(value)]="bill.frequency">
+                  <mat-option *ngFor="let frequency of frequency | keyvalue" [value]="frequency.value">{{ frequency.value }}</mat-option>
+                </mat-select>
+              </div>
+            </div>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="necessity">
+          <th mat-header-cell *matHeaderCellDef> Necessity </th>
+          <td mat-cell *matCellDef="let bill; let i = index;">
+
+            <div formArrayName="bills">
+              <div [formGroupName]="i">
+                <mat-select
+                  formControlName="necessity"
+                  class="bill-field"
+                  [ngClass]="{disabled: isDisabled(+bill.id), first: i === 0}"
+                  [(value)]="bill.necessity">
+                  <mat-option [value]="'true'">true</mat-option>
+                  <mat-option [value]="'false'">false</mat-option>
+                </mat-select>
+              </div>
+            </div>
+
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="category">
+          <th mat-header-cell *matHeaderCellDef> Category </th>
+
+          <td mat-cell *matCellDef="let bill; let i = index;">
+            <div formArrayName="bills">
+              <div [formGroupName]="i">
+                <mat-select
+                  formControlName="category"
+                  class="bill-field"
+                  [ngClass]="{disabled: isDisabled(+bill.id), first: i === 0}"
+                  [(value)]="bill.category">
+                  <mat-option *ngFor="let category of category | keyvalue" [value]="category.value">{{ category.value }}</mat-option>
+                </mat-select>
+              </div>
+            </div>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="chargeType">
+          <th mat-header-cell *matHeaderCellDef> Charge Type </th>
+
+          <td mat-cell *matCellDef="let bill; let i = index;">
+            <div formArrayName="bills">
+              <div [formGroupName]="i">
+                <mat-select
+                  formControlName="chargeType"
+                  class="bill-field"
+                  [ngClass]="{disabled: isDisabled(+bill.id), first: i === 0}"
+                  [(value)]="bill.chargeType">
+                  <mat-option *ngFor="let chargeType of chargeType | keyvalue" [value]="chargeType.value">{{ chargeType.value }}</mat-option>
+                </mat-select>
+              </div>
+            </div>
+
+            <div class="bill-hover-menu">
+              <mat-icon
+                [ngClass]="getIcon('left', +bill.id)"
+                [fontIcon]="getIcon('left', +bill.id)"
+                (click)="handleBillEdit(billsArray.controls[i], true)">
+              </mat-icon>
+              <mat-icon
+                [matMenuTriggerFor]="editableId !== +bill.id ? confirmMenu : null"
+                [matMenuTriggerData]="{bill, i}"
+                [ngClass]="getIcon('right', +bill.id)"
+                [fontIcon]="getIcon('right', +bill.id)"
+                (click)="handleBillEdit(billsArray.controls[i], false)">
+              </mat-icon>
+            </div>
+
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="columnsToDisplay; sticky:true"></tr>
+        <tr
+          mat-row
+          [ngClass]="{selected: billsToDelete.includes(parseInt(index.id))}"
+          *matRowDef="let row; let index; columns: columnsToDisplay;">
+        </tr>
+      </table>
+    </form>
+  </div>
+</div>
+
+<mat-menu class="confirm-menu" overlapTrigger="true" #confirmMenu="matMenu" yPosition="above" xPosition="before">
+  <ng-template matMenuContent let-bill="bill" let-i="i">
+    <div>
+      <span class="confirm-menu-text">Are you sure you want to delete <span id="confirm-menu-bill-name">{{bill.name}}</span>?</span>
+      <button class="confirm-menu-btn" mat-button (click)="deleteSelectedBills(+bill.id)">Yes</button>
+      <button class="confirm-menu-btn" mat-button (click)="handleBillEdit(billsArray.controls[i], false)">No</button>
+    </div>
+  </ng-template>
+</mat-menu>
+

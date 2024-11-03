@@ -68,8 +68,8 @@ export class CreateBillDialogComponent implements OnInit {
   )
 
   ngOnInit() {
-    this.billForm.valueChanges.subscribe((value) => {
-      this.bill = value as Bill;
+    this.billForm.valueChanges.subscribe((bill) => {
+      this.bill = bill as Bill;
     })
   }
 }
