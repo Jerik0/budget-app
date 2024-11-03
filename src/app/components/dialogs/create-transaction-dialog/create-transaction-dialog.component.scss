@@ -1,6 +1,6 @@
 @use './assets/styles';
 
-#create-bill-wrapper {
+#create-transaction-wrapper {
   height: 100%;
   display: flex;
   flex-direction: column;
@@ -18,6 +18,6 @@
   margin: auto 10px 10px 10px;
 }
 
-.mat-mdc-select.bill-field {
+.mat-mdc-select.transaction-field {
   width: 200px;
 }

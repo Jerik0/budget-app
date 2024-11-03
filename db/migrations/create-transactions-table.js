@@ -1,5 +1,5 @@
-const createBillsTable = `
-  CREATE TABLE IF NOT EXISTS bills (
+const createTransactionsTable = `
+  CREATE TABLE IF NOT EXISTS transactions (
     id SERIAL PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     amount INTEGER NOT NULL,
@@ -11,4 +11,4 @@ const createBillsTable = `
   );
 `;
 
-export default createBillsTable;
+export default createTransactionsTable;

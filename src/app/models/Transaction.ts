@@ -2,7 +2,7 @@ import Category from '../enums/Category';
 import ChargeType from "../enums/ChargeType";
 import {Frequency} from "../enums/Frequency";
 
-export class Bill {
+export class Transaction {
   public name?: string;
   public amount?: number;
   public date?: Date;

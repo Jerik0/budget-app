@@ -1,12 +1,13 @@
 import db from "../index.js";
-import createBillsTable from "./create-bills-table.js";
+import createTransactionsTable from "./create-transactions-table.js";
+import dropTransactionsTable from "../queries/drop-transactions-table.js";
 
 const runDbMigrations = async () => {
   console.log("Migration started");
   const client = await db.connect();
 
   try {
-    await client.query(createBillsTable);
+    await client.query(createTransactionsTable);
     await client.query('COMMIT');
     console.log("Migration successful");
   } catch (error) {

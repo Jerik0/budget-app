@@ -2,7 +2,7 @@ import {Component, inject, OnInit} from '@angular/core';
 import {FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators} from "@angular/forms";
 import {MatOption} from "@angular/material/autocomplete";
 import {MatFormField, MatSelect} from "@angular/material/select";
-import {Bill} from "../../../models/Bill";
+import {Transaction} from "../../../models/Transaction";
 import Category from "../../../enums/Category";
 import category from "../../../enums/Category";
 import {KeyValuePipe, NgForOf} from "@angular/common";
@@ -22,7 +22,7 @@ import ChargeType from "../../../enums/ChargeType";
 import {Frequency} from "../../../enums/Frequency";
 
 @Component({
-  selector: 'app-create-bill-dialog',
+  selector: 'app-create-transaction-dialog',
   standalone: true,
   providers: [provideNativeDateAdapter()],
   imports: [
@@ -46,30 +46,30 @@ import {Frequency} from "../../../enums/Frequency";
     MatDatepickerModule,
     MatButtonModule
   ],
-  templateUrl: './create-bill-dialog.component.html',
-  styleUrl: './create-bill-dialog.component.scss'
+  templateUrl: './create-transaction-dialog.component.html',
+  styleUrl: './create-transaction-dialog.component.scss'
 })
-export class CreateBillDialogComponent implements OnInit {
+export class CreateTransactionDialogComponent implements OnInit {
   protected readonly chargeType = ChargeType;
   protected readonly frequency = Frequency;
   protected readonly category = category;
   readonly dialog = inject(MatDialog);
-  bill = new Bill();
-  billForm = new FormGroup(
+  transaction = new Transaction();
+  transactionForm = new FormGroup(
     {
-      name: new FormControl(this.bill.name, [Validators.required]),
-      amount: new FormControl(this.bill.amount, [Validators.required]),
-      date: new FormControl(this.bill.date, [Validators.required]),
-      necessity: new FormControl(this.bill.necessity, [Validators.required]),
-      category: new FormControl(this.bill.category, [Validators.required]),
-      chargeType: new FormControl(this.bill.chargeType, [Validators.required]),
-      frequency: new FormControl(this.bill.frequency, [Validators.required])
+      name: new FormControl(this.transaction.name, [Validators.required]),
+      amount: new FormControl(this.transaction.amount, [Validators.required]),
+      date: new FormControl(this.transaction.date, [Validators.required]),
+      necessity: new FormControl(this.transaction.necessity, [Validators.required]),
+      category: new FormControl(this.transaction.category, [Validators.required]),
+      chargeType: new FormControl(this.transaction.chargeType, [Validators.required]),
+      frequency: new FormControl(this.transaction.frequency, [Validators.required])
     }
   )
 
   ngOnInit() {
-    this.billForm.valueChanges.subscribe((bill) => {
-      this.bill = bill as Bill;
+    this.transactionForm.valueChanges.subscribe((transaction) => {
+      this.transaction = transaction as Transaction;
     })
   }
 }

@@ -1,6 +1,6 @@
 import 'dotenv/config'
 import express from 'express'
-import billRouter from './routers/bill-router.js';
+import transactionRouter from './routers/transaction-router.js';
 import path from 'path'
 import { fileURLToPath } from 'url';
 import * as bodyParser from 'express'
@@ -20,7 +20,7 @@ app.use((req,res,next) => {
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-app.use('/bills', billRouter);
+app.use('/transactions', transactionRouter);
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/api/test', (req, res) => {

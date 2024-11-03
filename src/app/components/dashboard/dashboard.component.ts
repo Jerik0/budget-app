@@ -1,5 +1,5 @@
 import {AfterViewInit, Component, OnInit} from '@angular/core';
-import {BillService} from "../../services/bill.service";
+import {TransactionService} from "../../services/transaction.service";
 import {MatButton, MatButtonModule} from "@angular/material/button";
 import {
   MatCell,
@@ -33,7 +33,7 @@ import {
 import {MatNativeDateModule, provideNativeDateAdapter} from "@angular/material/core";
 import {RouterLink} from "@angular/router";
 import {MatRadioButton, MatRadioGroup} from "@angular/material/radio";
-import {Bill} from "../../models/Bill";
+import {Transaction} from "../../models/Transaction";
 import {Chart, ChartType, registerables} from "chart.js";
 Chart.register(...registerables);
 
@@ -95,15 +95,15 @@ Chart.register(...registerables);
   styleUrl: './dashboard.component.scss'
 })
 export class DashboardComponent implements OnInit, AfterViewInit {
-  protected bills: any;
+  protected transactions: any;
   unorderedNum!: number;
   chart: any = [];
-  private billsAmounts: number[] = [];
+  private transactionsAmounts: number[] = [];
   maximum: any;
   labels: any = [];
-  billsData: any;
+  transactionsData: any;
 
-  constructor(private billService: BillService) {
+  constructor(private transactionService: TransactionService) {
 
   }
 
@@ -116,13 +116,13 @@ export class DashboardComponent implements OnInit, AfterViewInit {
   }
 
   getData() {
-    this.billService.getAllBills().subscribe(res => {
+    this.transactionService.getAllTransactions().subscribe(res => {
 
-      this.bills = res;
-      this.sortBills(); // by the date property
+      this.transactions = res;
+      this.sortTransactions(); // by the date property
 
-      this.bills.map((b: any) => {
-        this.billsAmounts.push(b.amount);
+      this.transactions.map((b: any) => {
+        this.transactionsAmounts.push(b.amount);
         this.labels.push(b.name);
 
         let parsedDate = new Date(Date.parse(b.date));
@@ -136,7 +136,7 @@ export class DashboardComponent implements OnInit, AfterViewInit {
         datasets: [
           {
             label: 'Money Flow',
-            data: this.billsAmounts,
+            data: this.transactionsAmounts,
             borderColor: '#6ace95',
             backgroundColor: 'rgba(219,255,231,0.49)',
             fill: true,
@@ -179,16 +179,16 @@ export class DashboardComponent implements OnInit, AfterViewInit {
         },
       });
 
-      this.unorderedNum = Math.round((Math.max(...this.billsAmounts) - Math.min(...this.billsAmounts)) / 10);
-      this.maximum = Math.ceil(Math.max(...this.billsAmounts)/100) * 100;
+      this.unorderedNum = Math.round((Math.max(...this.transactionsAmounts) - Math.min(...this.transactionsAmounts)) / 10);
+      this.maximum = Math.ceil(Math.max(...this.transactionsAmounts)/100) * 100;
 
     })
   }
 
-  sortBills() {
+  sortTransactions() {
     // @ts-ignore
-    this.bills.sort((a: Bill, b: Bill) => new Date(a.date) - new Date(b.date));
-    console.log(this.bills);
+    this.transactions.sort((a: Transaction, b: Transaction) => new Date(a.date) - new Date(b.date));
+    console.log(this.transactions);
   }
 }
 

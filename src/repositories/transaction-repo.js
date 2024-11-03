@@ -3,7 +3,7 @@ import db from '../../db/index.js';
 const create = async ({ name, amount, date, necessity, category, chargeType, frequency }) => {
   const query = `
     INSERT INTO
-        bills (name, amount, date, necessity, category, charge_type, frequency)
+        transactions (name, amount, date, necessity, category, charge_type, frequency)
     VALUES
         ($1, $2, $3, $4, $5, $6, $7)
     RETURNING *
@@ -20,7 +20,7 @@ const create = async ({ name, amount, date, necessity, category, chargeType, fre
 const findAll = async () => {
   const query = `
     SELECT * FROM
-      bills
+      transactions
   ;`;
 
   try {
@@ -34,7 +34,7 @@ const findAll = async () => {
 const findById = async (id) => {
   const query = `
   SELECT * FROM
-    bills
+    transactions
   WHERE
     id = $1
   ;`;
@@ -57,7 +57,7 @@ const findById = async (id) => {
 const updateOne = async (id, { name, amount, date, necessity, category, chargeType, frequency }) => {
   const query = `
     UPDATE
-      bills
+      transactions
     SET
       name = $2,
       amount = $3,
@@ -78,14 +78,14 @@ const updateOne = async (id, { name, amount, date, necessity, category, chargeTy
   }
 }
 
-const deleteBills = async (values) => {
+const deleteTransactions = async (values) => {
   try {
     const ids = values.split(',');
     const parsedIds = ids.map(id => parseInt(id));
 
     const query = `
     DELETE FROM
-      bills
+      transactions
     WHERE
       id IN (${parsedIds})
   ;`;
@@ -102,5 +102,5 @@ const deleteBills = async (values) => {
 }
 
 export default {
-  create, findAll, findById, updateOne, deleteBills
+  create, findAll, findById, updateOne, deleteTransactions
 };

@@ -1,6 +1,6 @@
-<div id="create-bill-wrapper">
-  <h2>Create a New Bill</h2>
-  <form [formGroup]="billForm">
+<div id="create-transaction-wrapper">
+  <h2>Create a New Transaction</h2>
+  <form [formGroup]="transactionForm">
     <mat-form-field>
       <input matInput type="text" formControlName="name" placeholder="name">
     </mat-form-field>
@@ -23,41 +23,41 @@
     </mat-form-field>
 
     <mat-select
-      class="bill-field"
+      class="transaction-field"
       formControlName="frequency"
       placeholder="frequency"
-      [(value)]="bill.frequency">
+      [(value)]="transaction.frequency">
       <mat-option *ngFor="let frequency of frequency | keyvalue" [value]="frequency.value">{{ frequency.value }}</mat-option>
     </mat-select>
 
     <mat-select
-      class="bill-field"
+      class="transaction-field"
       formControlName="necessity"
       placeholder="necessity"
-      [(value)]="bill.necessity">
+      [(value)]="transaction.necessity">
       <mat-option [value]="'true'">true</mat-option>
       <mat-option [value]="'false'">false</mat-option>
     </mat-select>
 
     <mat-select
-      class="bill-field"
+      class="transaction-field"
       formControlName="category"
       placeholder="category"
-      [(value)]="bill.category">
+      [(value)]="transaction.category">
       <mat-option *ngFor="let category of category | keyvalue" [value]="category.value">{{ category.value }}</mat-option>
     </mat-select>
 
     <mat-select
-      class="bill-field"
+      class="transaction-field"
       formControlName="chargeType"
       placeholder="charge type"
-      [(value)]="bill.chargeType">
+      [(value)]="transaction.chargeType">
       <mat-option *ngFor="let chargeType of chargeType | keyvalue" [value]="chargeType.value">{{ chargeType.value }}</mat-option>
     </mat-select>
   </form>
 
   <div id="actions-container">
     <button class="btn" mat-button [mat-dialog-close]="false">Cancel</button>
-    <button class="btn btn-primary" mat-raised-button [mat-dialog-close]="bill">Create</button>
+    <button class="btn btn-primary" mat-raised-button [mat-dialog-close]="transaction">Create</button>
   </div>
 </div>

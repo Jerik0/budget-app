@@ -1,17 +1,17 @@
-<div id="bill-management-wrapper">
+<div id="transaction-management-wrapper">
   <div id="top-actions-container">
     <div>
-      <button class="btn btn-primary" mat-flat-button (click)="openAddBillDialog()">Create a Bill</button>
-      <button class="btn btn-danger" mat-flat-button (click)="deleteSelectedBills()">Delete Selected Bills</button>
+      <button class="btn btn-primary" mat-flat-button (click)="openAddTransactionDialog()">Create a Transaction</button>
+      <button class="btn btn-danger" mat-flat-button (click)="deleteSelectedTransactions()">Delete Selected Transactions</button>
     </div>
     <div>
       <button class="btn btn-primary" mat-flat-button routerLink="/dashboard">Dashboard</button>
     </div>
   </div>
 
-  <div id="bills-list-wrapper" class="mat-elevation-z2">
-    <form [formGroup]="billForm">
-      <table id="bills-table" mat-table [dataSource]="dataSource">
+  <div id="transactions-list-wrapper" class="mat-elevation-z2">
+    <form [formGroup]="transactionForm">
+      <table id="transactions-table" mat-table [dataSource]="dataSource">
 
         <!-- Checkbox Column -->
         <ng-container matColumnDef="select">
@@ -23,10 +23,10 @@
             </mat-checkbox>
           </th>
           <td mat-cell *matCellDef="let row; let i = index">
-            <div formArrayName="bills">
+            <div formArrayName="transactions">
               <div [formGroupName]="i">
                 <mat-checkbox (click)="$event.stopPropagation()"
-                              (change)="$event ? onSelectBill(row) : null"
+                              (change)="$event ? onSelectTransaction(row) : null"
                               [checked]="selection.isSelected(row)"
                               [ngClass]="{disabled: isDisabled(+row.id), first: i === 0}"
                               [aria-label]="checkboxLabel(row)">
@@ -38,15 +38,15 @@
 
         <ng-container matColumnDef="name">
           <th mat-header-cell *matHeaderCellDef> Name </th>
-          <td mat-cell *matCellDef="let bill; let i = index;">
+          <td mat-cell *matCellDef="let transaction; let i = index;">
 
-            <div formArrayName="bills">
+            <div formArrayName="transactions">
               <div [formGroupName]="i">
                 <input formControlName="name"
-                       class="bill-field"
-                       [ngClass]="{disabled: isDisabled(+bill.id), first: i === 0}"
+                       class="transaction-field"
+                       [ngClass]="{disabled: isDisabled(+transaction.id), first: i === 0}"
                        type="text"
-                       [value]="bill.name">
+                       [value]="transaction.name">
               </div>
             </div>
 
@@ -55,14 +55,14 @@
 
         <ng-container matColumnDef="amount">
           <th mat-header-cell *matHeaderCellDef> Amount </th>
-          <td mat-cell *matCellDef="let bill; let i = index;">
-            <div formArrayName="bills">
+          <td mat-cell *matCellDef="let transaction; let i = index;">
+            <div formArrayName="transactions">
               <div [formGroupName]="i">
                 <input formControlName="amount"
-                       class="bill-field"
-                       [ngClass]="{disabled: isDisabled(+bill.id), first: i === 0}"
+                       class="transaction-field"
+                       [ngClass]="{disabled: isDisabled(+transaction.id), first: i === 0}"
                        type="text"
-                       [value]="bill.amount">
+                       [value]="transaction.amount">
               </div>
             </div>
 
@@ -71,23 +71,23 @@
 
         <ng-container matColumnDef="date">
           <th mat-header-cell *matHeaderCellDef> Starting Date </th>
-          <td mat-cell *matCellDef="let bill; let i = index;">
+          <td mat-cell *matCellDef="let transaction; let i = index;">
 
-            <div formArrayName="bills">
+            <div formArrayName="transactions">
               <div id="date-container" [formGroupName]="i">
                 <div id="date-left-container">
                   <input formControlName="date"
                          matInput
                          readonly
-                         [ngClass]="{disabled: isDisabled(+bill.id), first: i === 0}"
+                         [ngClass]="{disabled: isDisabled(+transaction.id), first: i === 0}"
                          [matDatepicker]="datepicker"
                          type="text"
-                         [value]="bill.date">
+                         [value]="transaction.date">
                   <mat-datepicker-toggle matIconSuffix [for]="datepicker"></mat-datepicker-toggle>
                 </div>
 
                 <div id="date-right-container">
-                  <mat-datepicker #datepicker [disabled]="isDisabled(+bill.id)">
+                  <mat-datepicker #datepicker [disabled]="isDisabled(+transaction.id)">
                     <mat-datepicker-actions>
                       <button mat-button matDatepickerCancel>Cancel</button>
                       <button mat-raised-button matDatepickerApply>Apply</button>
@@ -102,15 +102,15 @@
 
         <ng-container matColumnDef="frequency">
           <th mat-header-cell *matHeaderCellDef> Frequency </th>
-          <td mat-cell *matCellDef="let bill; let i = index;">
+          <td mat-cell *matCellDef="let transaction; let i = index;">
 
-            <div formArrayName="bills">
+            <div formArrayName="transactions">
               <div [formGroupName]="i">
                 <mat-select
-                  class="bill-field"
+                  class="transaction-field"
                   formControlName="frequency"
-                  [ngClass]="{disabled: isDisabled(+bill.id), first: i === 0}"
-                  [(value)]="bill.frequency">
+                  [ngClass]="{disabled: isDisabled(+transaction.id), first: i === 0}"
+                  [(value)]="transaction.frequency">
                   <mat-option *ngFor="let frequency of frequency | keyvalue" [value]="frequency.value">{{ frequency.value }}</mat-option>
                 </mat-select>
               </div>
@@ -120,15 +120,15 @@
 
         <ng-container matColumnDef="necessity">
           <th mat-header-cell *matHeaderCellDef> Necessity </th>
-          <td mat-cell *matCellDef="let bill; let i = index;">
+          <td mat-cell *matCellDef="let transaction; let i = index;">
 
-            <div formArrayName="bills">
+            <div formArrayName="transactions">
               <div [formGroupName]="i">
                 <mat-select
                   formControlName="necessity"
-                  class="bill-field"
-                  [ngClass]="{disabled: isDisabled(+bill.id), first: i === 0}"
-                  [(value)]="bill.necessity">
+                  class="transaction-field"
+                  [ngClass]="{disabled: isDisabled(+transaction.id), first: i === 0}"
+                  [(value)]="transaction.necessity">
                   <mat-option [value]="'true'">true</mat-option>
                   <mat-option [value]="'false'">false</mat-option>
                 </mat-select>
@@ -141,14 +141,14 @@
         <ng-container matColumnDef="category">
           <th mat-header-cell *matHeaderCellDef> Category </th>
 
-          <td mat-cell *matCellDef="let bill; let i = index;">
-            <div formArrayName="bills">
+          <td mat-cell *matCellDef="let transaction; let i = index;">
+            <div formArrayName="transactions">
               <div [formGroupName]="i">
                 <mat-select
                   formControlName="category"
-                  class="bill-field"
-                  [ngClass]="{disabled: isDisabled(+bill.id), first: i === 0}"
-                  [(value)]="bill.category">
+                  class="transaction-field"
+                  [ngClass]="{disabled: isDisabled(+transaction.id), first: i === 0}"
+                  [(value)]="transaction.category">
                   <mat-option *ngFor="let category of category | keyvalue" [value]="category.value">{{ category.value }}</mat-option>
                 </mat-select>
               </div>
@@ -159,31 +159,31 @@
         <ng-container matColumnDef="chargeType">
           <th mat-header-cell *matHeaderCellDef> Charge Type </th>
 
-          <td mat-cell *matCellDef="let bill; let i = index;">
-            <div formArrayName="bills">
+          <td mat-cell *matCellDef="let transaction; let i = index;">
+            <div formArrayName="transactions">
               <div [formGroupName]="i">
                 <mat-select
                   formControlName="chargeType"
-                  class="bill-field"
-                  [ngClass]="{disabled: isDisabled(+bill.id), first: i === 0}"
-                  [(value)]="bill.chargeType">
+                  class="transaction-field"
+                  [ngClass]="{disabled: isDisabled(+transaction.id), first: i === 0}"
+                  [(value)]="transaction.chargeType">
                   <mat-option *ngFor="let chargeType of chargeType | keyvalue" [value]="chargeType.value">{{ chargeType.value }}</mat-option>
                 </mat-select>
               </div>
             </div>
 
-            <div class="bill-hover-menu">
+            <div class="transaction-hover-menu">
               <mat-icon
-                [ngClass]="getIcon('left', +bill.id)"
-                [fontIcon]="getIcon('left', +bill.id)"
-                (click)="handleBillEdit(billsArray.controls[i], true)">
+                [ngClass]="getIcon('left', +transaction.id)"
+                [fontIcon]="getIcon('left', +transaction.id)"
+                (click)="handleTransactionEdit(transactionsArray.controls[i], true)">
               </mat-icon>
               <mat-icon
-                [matMenuTriggerFor]="editableId !== +bill.id ? confirmMenu : null"
-                [matMenuTriggerData]="{bill, i}"
-                [ngClass]="getIcon('right', +bill.id)"
-                [fontIcon]="getIcon('right', +bill.id)"
-                (click)="handleBillEdit(billsArray.controls[i], false)">
+                [matMenuTriggerFor]="editableId !== +transaction.id ? confirmMenu : null"
+                [matMenuTriggerData]="{transaction, i}"
+                [ngClass]="getIcon('right', +transaction.id)"
+                [fontIcon]="getIcon('right', +transaction.id)"
+                (click)="handleTransactionEdit(transactionsArray.controls[i], false)">
               </mat-icon>
             </div>
 
@@ -193,7 +193,7 @@
         <tr mat-header-row *matHeaderRowDef="columnsToDisplay; sticky:true"></tr>
         <tr
           mat-row
-          [ngClass]="{selected: billsToDelete.includes(parseInt(index.id))}"
+          [ngClass]="{selected: transactionsToDelete.includes(parseInt(index.id))}"
           *matRowDef="let row; let index; columns: columnsToDisplay;">
         </tr>
       </table>
@@ -202,11 +202,11 @@
 </div>
 
 <mat-menu class="confirm-menu" overlapTrigger="true" #confirmMenu="matMenu" yPosition="above" xPosition="before">
-  <ng-template matMenuContent let-bill="bill" let-i="i">
+  <ng-template matMenuContent let-transaction="transaction" let-i="i">
     <div>
-      <span class="confirm-menu-text">Are you sure you want to delete <span id="confirm-menu-bill-name">{{bill.name}}</span>?</span>
-      <button class="confirm-menu-btn" mat-button (click)="deleteSelectedBills(+bill.id)">Yes</button>
-      <button class="confirm-menu-btn" mat-button (click)="handleBillEdit(billsArray.controls[i], false)">No</button>
+      <span class="confirm-menu-text">Are you sure you want to delete <span id="confirm-menu-transaction-name">{{transaction.name}}</span>?</span>
+      <button class="confirm-menu-btn" mat-button (click)="deleteSelectedTransactions(+transaction.id)">Yes</button>
+      <button class="confirm-menu-btn" mat-button (click)="handleTransactionEdit(transactionsArray.controls[i], false)">No</button>
     </div>
   </ng-template>
 </mat-menu>

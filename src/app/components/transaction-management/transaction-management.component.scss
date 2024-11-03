@@ -1,10 +1,10 @@
 @import './assets/styles.scss';
 
-#bill-management-wrapper {
+#transaction-management-wrapper {
   height: 100%;
 }
 
-#bills-list-wrapper {
+#transactions-list-wrapper {
   overflow: auto;
   height: 524px;
 }
@@ -14,7 +14,7 @@
   display: flex;
 }
 
-.bill-hover-menu {
+.transaction-hover-menu {
   display: none;
 
   mat-icon:hover {
@@ -43,7 +43,7 @@
   }
 }
 
-mat-select.bill-field {
+mat-select.transaction-field {
   border: 1px solid transparent;
   &:not(.mat-mdc-select-disabled) {
     box-shadow: 0 2px 1px -1px rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 1px 3px 0px rgba(0, 0, 0, 0.12);
@@ -56,7 +56,7 @@ mat-select.bill-field {
 }
 
 
-.bill-field {
+.transaction-field {
   border-radius: 5px;
   padding: 2px 4px;
   &.disabled {
@@ -115,7 +115,7 @@ mat-select.bill-field {
     height: 100% !important;
   }
 
-  #bills-table {
+  #transactions-table {
     & .mat-column-select {
       //width: 50px !important;
     }
@@ -181,7 +181,7 @@ mat-select.bill-field {
       box-shadow: 0 2px 1px -1px rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 1px 3px 0px rgba(0, 0, 0, 0.12);
     }
 
-    & tr:hover .bill-hover-menu {
+    & tr:hover .transaction-hover-menu {
       background-color: #292F36;
       color: #edf2f4;
       position: absolute;
@@ -233,25 +233,25 @@ mat-select.bill-field {
   }
 
   // ======== SCROLL BAR ========
-  #bills-list-wrapper::-webkit-scrollbar {
+  #transactions-list-wrapper::-webkit-scrollbar {
     width: .5em;
     border-radius: 10px;
     margin-left: 5px;
   }
 
-  #bills-list-wrapper::-webkit-scrollbar-track {
+  #transactions-list-wrapper::-webkit-scrollbar-track {
     box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
     border-radius: 10px;
   }
 
-  #bills-list-wrapper::-webkit-scrollbar-thumb {
+  #transactions-list-wrapper::-webkit-scrollbar-thumb {
     background-color: #2b2d42;
     border-radius: 10px;
     //outline: 1px solid slategrey;
   }
 }
 
-#confirm-menu-bill-name {
+#confirm-menu-transaction-name {
   background-color: #f5f5f5;
   padding: 5px;
   margin: 0 5px;
